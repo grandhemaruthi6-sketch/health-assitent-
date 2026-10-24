@@ -37,17 +37,17 @@ export const BottomNav = () => {
         <span className="text-[10px]">Reports</span>
       </button>
 
-      {/* Floating Center Action Button: Upload (+) */}
+      {/* Floating Center Action Button: AI Voice Assistant */}
       <div className="flex-1 flex justify-center -mt-6">
         <button
-          onClick={() => navigateTo('upload')}
-          aria-label="Quick Upload Medical Report"
-          className="w-12 h-12 rounded-full bg-brand-500 hover:bg-brand-600 active:scale-95 text-white flex items-center justify-center shadow-floating border-4 border-white transition transform hover:rotate-90 duration-200"
+          onClick={() => navigateTo('voice_answer')}
+          aria-label="Open AI Voice Assistant"
+          className="w-12 h-12 rounded-full bg-brand-500 hover:bg-brand-600 active:scale-95 text-white flex items-center justify-center shadow-floating border-4 border-white transition transform duration-200"
           type="button"
         >
-          <svg className="w-6 h-6 stroke-white stroke-[2.5]" fill="none" viewBox="0 0 24 24">
-            <line x1="12" y1="5" x2="12" y2="19" strokeLinecap="round" />
-            <line x1="5" y1="12" x2="19" y2="12" strokeLinecap="round" />
+          <svg className="w-6 h-6 stroke-white stroke-[2.5]" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="9" y="2" width="6" height="12" rx="3" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
       </div>
