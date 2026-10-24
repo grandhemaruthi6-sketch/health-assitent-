@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { Header } from '../components/common/Header';
 
@@ -16,6 +16,16 @@ export const ExtractedReviewScreen = () => {
   const [isEditingDates, setIsEditingDates] = useState(false);
   const [tempVisitDate, setTempVisitDate] = useState(extractedDraft?.visitDate || '');
   const [tempReportDate, setTempReportDate] = useState(extractedDraft?.reportDate || '');
+  const [dateValidationError, setDateValidationError] = useState('');
+  const [saveError, setSaveError] = useState('');
+  const [isSavingReport, setIsSavingReport] = useState(false);
+
+  useEffect(() => {
+    setTempVisitDate(extractedDraft?.visitDate || '');
+    setTempReportDate(extractedDraft?.reportDate || '');
+    setDateValidationError('');
+    setSaveError('');
+  }, [extractedDraft?.id, extractedDraft?.visitDate, extractedDraft?.reportDate]);
 
   // Prescription View State
   const [editingMedIndex, setEditingMedIndex] = useState(null);
@@ -154,34 +164,53 @@ export const ExtractedReviewScreen = () => {
     });
   };
 
+  const formatReviewDate = value => {
+    if (!value) return null;
+    const match = String(value).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    const date = match
+      ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]), 12, 0, 0)
+      : new Date(value);
+    return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  };
+
   const handleSaveDates = () => {
-    if (extractedDraft) {
-      setExtractedDraft({
-        ...extractedDraft,
-        visitDate: tempVisitDate || null,
-        reportDate: tempReportDate || null,
-        isDateUncertain: !tempReportDate,
-        date: tempReportDate ? new Date(tempReportDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : null
-      });
+    if (!tempVisitDate || !tempReportDate) {
+      setDateValidationError('Both the clinical encounter date and report date are required. Please check the printed dates on the document.');
+      return;
     }
+    setExtractedDraft(prev => prev ? ({
+      ...prev,
+      visitDate: tempVisitDate,
+      reportDate: tempReportDate,
+      isDateUncertain: false,
+      isVisitDateUncertain: false,
+      date: formatReviewDate(tempReportDate)
+    }) : prev);
+    setDateValidationError('');
     setIsEditingDates(false);
   };
 
-  const handlePrimaryConfirm = () => {
-    if (!extractedDraft?.reportDate || extractedDraft?.isDateUncertain) {
+  const handlePrimaryConfirm = async () => {
+    if (!extractedDraft?.reportDate || !extractedDraft?.visitDate || extractedDraft?.isDateUncertain || extractedDraft?.isVisitDateUncertain) {
       setTempVisitDate(extractedDraft?.visitDate || '');
       setTempReportDate(extractedDraft?.reportDate || '');
+      setDateValidationError('');
       setIsEditingDates(true);
       return;
     }
 
-    if (isPrescription) {
-      // Mark confirmed prescriptions as user_verified before saving
-      extractedDraft.status = 'user_verified';
-      extractedDraft.processingStatus = 'user_verified';
+    const draftToSave = isPrescription
+      ? { ...extractedDraft, status: 'user_verified', processingStatus: 'user_verified' }
+      : extractedDraft;
+    setIsSavingReport(true);
+    setSaveError('');
+    try {
+      await confirmExtractedDraft(draftToSave);
+    } catch (error) {
+      setSaveError(error?.message || 'Could not save this report. Please try again.');
+    } finally {
+      setIsSavingReport(false);
     }
-
-    confirmExtractedDraft();
   };
 
   return (
@@ -200,8 +229,15 @@ export const ExtractedReviewScreen = () => {
           </div>
           <div className="flex-1 overflow-hidden">
             <h2 className="text-xs font-bold text-slate-900 truncate">
-              {extractedDraft?.hospitalName || "Clinical Facility"}
+              {extractedDraft?.hospitalName || "Facility not identified"}
             </h2>
+            {(extractedDraft?.patientName || extractedDraft?.patientAge || extractedDraft?.patientSex) && (
+              <p className="text-[11px] text-slate-700 mt-1">
+                <span className="font-semibold">Patient:</span> {extractedDraft?.patientName || 'Name not detected'}
+                {extractedDraft?.patientAge ? ` • ${extractedDraft.patientAge}` : ''}
+                {extractedDraft?.patientSex ? ` • ${extractedDraft.patientSex}` : ''}
+              </p>
+            )}
             <div className="text-[11px] text-teal-800 font-medium space-y-0.5 mt-0.5">
               <p>
                 <span className="font-semibold text-teal-900">Encounter Date:</span> {extractedDraft?.visitDate || "Not recorded"}
@@ -504,7 +540,8 @@ export const ExtractedReviewScreen = () => {
                     </div>
                   </div>
 
-                  <div className="flex items-center space-x-2 pt-2">
+                  {dateValidationError && <p role="alert" className="text-[11px] text-rose-700 bg-rose-50 border border-rose-200 rounded-lg p-2">{dateValidationError}</p>}
+              <div className="flex items-center space-x-2 pt-2">
                     <button
                       onClick={() => { setEditingMedIndex(null); setIsAddingMed(false); }}
                       className="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl"
@@ -712,17 +749,19 @@ export const ExtractedReviewScreen = () => {
         <div className="pt-3">
           <button
             onClick={handlePrimaryConfirm}
+            disabled={isSavingReport}
             className="w-full py-3.5 px-4 bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white font-semibold text-xs rounded-xl shadow-soft transition flex items-center justify-center space-x-2 active:scale-98"
           >
             <span>
-              {isPrescription
+              {isSavingReport ? 'Saving report securely…' : (isPrescription
                 ? `Confirm Prescription (${medications.length} meds verified) & Save`
-                : `Save to ${extractedDraft?.hospitalName || "Hospital Record"} & View Details`}
+                : `Save to ${extractedDraft?.hospitalName || "Hospital Record"} & View Details`)}
             </span>
             <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
+          {saveError && <p role="alert" className="text-[11px] text-rose-700 bg-rose-50 border border-rose-200 rounded-xl p-3 mt-2">{saveError}</p>}
           {isPrescription && (
             <p className="text-[10px] text-slate-400 text-center mt-1.5">
               🔒 Prescriptions are stored as <b>user_verified</b>. No medication reminders or alerts are scheduled without your explicit confirmation.

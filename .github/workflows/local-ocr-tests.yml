@@ -5,7 +5,31 @@ on:
     paths:
       - "server/services/ocr/**"
       - "server/services/clinical/clinicalParser.js"
+      - "server/schemas/medicalDocumentSchema.js"
+      - "server/services/clinical/medicalPipelineService.js"
+      - "server/routes/medicalRecordRoutes.js"
+      - "src/context/AppContext.jsx"
+      - "src/screens/ExtractedReviewScreen.jsx"
+      - "src/screens/ReportDetailsScreen.jsx"
+      - "src/screens/SuccessReportScreen.jsx"
+      - "src/services/apiClient.js"
+      - "src/utils/medicalReportMapping.js"
+      - "src/utils/medicalReportMapping.test.js"
+      - "src/utils/reportFileUrl.js"
+      - "src/utils/reportFileUrl.test.js"
       - "server/utils/realDocumentExtractor.js"
+      - "server/schemas/medicalDocumentSchema.js"
+      - "server/services/clinical/medicalPipelineService.js"
+      - "server/routes/medicalRecordRoutes.js"
+      - "src/context/AppContext.jsx"
+      - "src/screens/ExtractedReviewScreen.jsx"
+      - "src/screens/ReportDetailsScreen.jsx"
+      - "src/screens/SuccessReportScreen.jsx"
+      - "src/services/apiClient.js"
+      - "src/utils/medicalReportMapping.js"
+      - "src/utils/medicalReportMapping.test.js"
+      - "src/utils/reportFileUrl.js"
+      - "src/utils/reportFileUrl.test.js"
       - "server/tests/localTesseractProvider.test.js"
       - "server/tests/documentHeaderMetadata.test.js"
       - "package.json"
@@ -34,5 +58,7 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
+      - name: Initialize SQLite schema for integration tests
+        run: node --input-type=module -e "import { runMigrations } from './server/db/migrations.js'; runMigrations();"
       - name: Run local OCR provider tests
-        run: npm run test:local-ocr && npm run test:header-metadata
+        run: npm run test:local-ocr && npm run test:header-metadata && npm run test:report-mapping && npm run test:report-file-url && node server/tests/clinicalPipeline.test.js && node server/tests/clinicalValueCorrectness.test.js && node server/tests/documentIsolationAndUrinalysis.test.js && node server/tests/multiDateCbcAndPersistence.test.js && npm run build

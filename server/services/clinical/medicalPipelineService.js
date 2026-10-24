@@ -1,7 +1,7 @@
 import { getOcrProvider } from '../ocr/ocrFactory.js';
 import { validateDocument } from '../../utils/documentValidator.js';
 import { classifyDocument } from './documentClassifier.js';
-import { extractClinicalFields } from './clinicalParser.js';
+import { extractClinicalFields, extractDocumentMetadata } from './clinicalParser.js';
 import { parsePrescriptionDocument } from './prescriptionParser.js';
 import { MedicalDocumentAnalysisSchema } from '../../schemas/medicalDocumentSchema.js';
 
@@ -95,11 +95,8 @@ export async function processMedicalDocument({ fileBuffer, mimeType, ocrResult, 
     // Step 3: Parse to structured fields without guessing
     const rxResult = parsePrescriptionDocument(resolvedOcr);
 
-    // Metadata extraction for prescription (physician, date, clinic)
-    const clinician = fullText.match(/\b(Dr\.\s+[A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)?(?:,\s*(?:MD|MBBS|MS|DNB|FRCS))?)\b/i)?.[1]?.trim() || null;
-    const dateMatch = fullText.match(/\b(?:Date|Dated)[\s:]+(\d{4}-\d{2}-\d{2}|\d{1,2}\/\d{1,2}\/\d{2,4})\b/i);
-    const docDate = dateMatch ? dateMatch[1] : null;
-    const facility = fullText.match(/(?:^|\n)[ \t]*([A-Z][A-Z \t&]{2,50}(?:CLINIC|HOSPITAL|HEALTHCARE|MEDICAL CENTER|CENTER))[ \t]*(?:\r?\n|$)/im)?.[1]?.trim() || null;
+    // Use the same provider-independent metadata extractor as lab and imaging reports.
+    const metadata = extractDocumentMetadata(fullText, resolvedOcr.pages || []);
 
     const plainSummary = {
       overview: `Prescription parsed with ${rxResult.medications.length} medication(s) identified.`,
@@ -115,16 +112,7 @@ export async function processMedicalDocument({ fileBuffer, mimeType, ocrResult, 
       category: 'Prescription',
       classificationConfidence: 0.95,
       classificationSignals: ['USER_SELECTED_PRESCRIPTION'],
-      metadata: {
-        facilityName: facility,
-        clinicianName: clinician,
-        documentDate: docDate,
-        patientIdentifier: null,
-        evidence: {
-          clinician: clinician ? { presence: 'EXPLICIT', pageNumber: 1, rawSnippet: clinician, confidence: 0.95 } : undefined,
-          date: docDate ? { presence: 'EXPLICIT', pageNumber: 1, rawSnippet: docDate, confidence: 0.95 } : undefined
-        }
-      },
+      metadata,
       labResults: [],
       medications: rxResult.medications,
       imagingFindings: [],

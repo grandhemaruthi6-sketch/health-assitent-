@@ -10,6 +10,7 @@ import {
 } from '../data/mockData';
 import { apiClient } from '../services/apiClient';
 import { extractLabeledMetadata } from '../utils/documentMetadataExtractor';
+import { buildPersistedClinicalAnalysis, formatClinicalDate, mapLabResultsToBiomarkers, mapSavedReport } from '../utils/medicalReportMapping';
 import { 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
@@ -106,40 +107,11 @@ export const AppProvider = ({ children }) => {
       }
 
       if (Array.isArray(dbReports)) {
-        const formattedReports = dbReports.map(r => ({
+        const formattedReports = dbReports.map(r => mapSavedReport({
           ...r,
-          fileSize: r.fileSizeFormatted || `${(r.fileSizeBytes / (1024 * 1024)).toFixed(1)} MB`,
-          date: r.reportDate ? new Date(r.reportDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : (r.uploadedAt ? new Date(r.uploadedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Unknown Date'),
+          fileSize: r.fileSizeFormatted || `${((r.fileSizeBytes || 0) / (1024 * 1024)).toFixed(1)} MB`,
           timestamp: r.uploadedAt,
-          status: r.processingStatus === 'completed' ? 'Processed' : r.processingStatus,
-          doctorName: r.physicianName || 'Dr. Sarah Jenkins, MD',
-          labName: r.hospital?.name || r.hospitalName || 'Clinical Diagnostics',
-          hospitalName: r.hospital?.name || r.hospitalName || 'Clinical Diagnostics',
-          biomarkers: r.aiAnalysis?.extractedBiomarkers || r.aiAnalysis?.labResults?.map((lr, idx) => {
-            const rawRange = lr.referenceRange?.rawRange || lr.referenceInterval?.rawRange || (
-              lr.referenceRange?.low != null && lr.referenceRange?.high != null
-                ? `${lr.referenceRange.low} - ${lr.referenceRange.high}`
-                : (lr.referenceInterval?.low != null && lr.referenceInterval?.high != null
-                  ? `${lr.referenceInterval.low} - ${lr.referenceInterval.high}`
-                  : 'Unavailable')
-            );
-            return {
-              id: `bm-${idx}`,
-              name: lr.name,
-              category: lr.category || 'Clinical Marker',
-              value: lr.numericValue != null ? lr.numericValue : (lr.rawValue || lr.value || 'N/A'),
-              numericValue: lr.numericValue,
-              rawValue: lr.rawValue,
-              unit: lr.unit || '',
-              minRange: lr.referenceRange?.low ?? lr.referenceInterval?.low ?? null,
-              maxRange: lr.referenceRange?.high ?? lr.referenceInterval?.high ?? null,
-              rawRange,
-              status: lr.status === 'NORMAL' ? 'Normal' : (lr.status === 'HIGH' ? 'Slightly Elevated' : (lr.status === 'LOW' ? 'Low' : (lr.isAbnormal ? 'Slightly Elevated' : 'Normal'))),
-              explanation: lr.interpretation || 'Recorded physiological measurement.',
-              flags: lr.flags,
-              evidence: lr.evidence
-            };
-          }) || []
+          status: r.processingStatus === 'completed' ? 'Processed' : r.processingStatus
         }));
         setReports(formattedReports);
         if (formattedReports.length > 0) {
@@ -500,7 +472,7 @@ export const AppProvider = ({ children }) => {
     hospitalId: null,
     hospitalName: '',
     visitDate: '',
-    doctorName: "Dr. Sarah Jenkins, MD",
+    doctorName: "",
     extractedText: "",
     biomarkers: []
   });
@@ -845,39 +817,16 @@ export const AppProvider = ({ children }) => {
       setUploadProgress(75);
       setProcessingStage(2); // 2: Checking extracted details
 
-      // Map labResults to biomarkers array preserving exact values, units and source ranges
-      const mappedBiomarkers = (clinicalData.labResults || []).map((lr, idx) => {
-        const rawRange = lr.referenceRange?.rawRange || lr.referenceInterval?.rawRange || (
-          lr.referenceRange?.low != null && lr.referenceRange?.high != null
-            ? `${lr.referenceRange.low} - ${lr.referenceRange.high}`
-            : 'Unavailable'
-        );
-
-        return {
-          id: `bm-${idx}-${Date.now()}`,
-          name: lr.name,
-          category: lr.category || clinicalData.category || uploadFormData.reportType.name,
-          value: lr.numericValue != null ? lr.numericValue : (lr.rawValue || 'N/A'),
-          numericValue: lr.numericValue,
-          rawValue: lr.rawValue,
-          unit: lr.unit || '',
-          minRange: lr.referenceRange?.low ?? null,
-          maxRange: lr.referenceRange?.high ?? null,
-          rawRange,
-          status: lr.status === 'NORMAL' ? 'Normal' : (lr.status === 'HIGH' ? 'Slightly Elevated' : (lr.status === 'LOW' ? 'Low' : 'Normal')),
-          explanation: lr.interpretation || 'Clinical measurement from verified source document.',
-          historicalReadings: lr.historicalReadings || [],
-          flags: lr.flags,
-          evidence: lr.evidence
-        };
-      });
-
+      const mappedBiomarkers = mapLabResultsToBiomarkers(clinicalData.labResults || [], clinicalData.category || uploadFormData.reportType.name);
       setUploadProgress(90);
       setProcessingStage(3); // 3: Preparing simple explanation
 
-      const extractedReportDate = clinicalData.metadata?.documentDate || null;
-      const configuredVisitDate = uploadFormData.visitDate || null;
-      const isDateUncertain = !extractedReportDate || clinicalData.metadata?.evidence?.date?.presence === 'UNCERTAIN';
+      const metadata = clinicalData.metadata || {};
+      const extractedReportDate = metadata.reportDate || metadata.documentDate || metadata.collectionDate || null;
+      const configuredVisitDate = metadata.visitDate || metadata.collectionDate || uploadFormData.visitDate || extractedReportDate || null;
+      const reportDateEvidence = metadata.evidence?.reportDate?.presence;
+      const isDateUncertain = !extractedReportDate || (reportDateEvidence ? reportDateEvidence !== 'EXPLICIT' : metadata.evidence?.date?.presence === 'UNCERTAIN');
+      const isVisitDateUncertain = !metadata.visitDate || metadata.evidence?.visitDate?.presence !== 'EXPLICIT';
 
       const newDraft = {
         id: clinicalData.documentId || `rep-${Date.now()}`,
@@ -886,18 +835,23 @@ export const AppProvider = ({ children }) => {
         reportType: clinicalData.category || uploadFormData.reportType.name,
         fileType: uploadFormData.selectedFile?.type?.includes("image") ? "IMAGE" : "PDF",
         fileSize: `${fileSizeMB} MB`,
-        hospitalId: uploadFormData.hospitalId || null,
-        hospitalName: uploadFormData.hospitalName || clinicalData.metadata?.facilityName || "Unidentified facility",
-        hospitalDetected: Boolean(clinicalData.metadata?.facilityName),
+        hospitalId: uploadFormData.hospitalId && (!metadata.facilityName || metadata.facilityName === uploadFormData.hospitalName) ? uploadFormData.hospitalId : null,
+        hospitalName: metadata.facilityName || uploadFormData.hospitalName || "Unidentified facility",
+        hospitalDetected: Boolean(metadata.facilityName || uploadFormData.hospitalName),
         hospitalBranch: extractLabeledMetadata(clinicalData.rawOcr?.fullText, /(?:branch|unit|campus)/i),
         hospitalLocation: extractLabeledMetadata(clinicalData.rawOcr?.fullText, /(?:address|location)/i),
         hospitalDepartment: extractLabeledMetadata(clinicalData.rawOcr?.fullText, /(?:department|dept|specialty|speciality)/i),
-        doctorName: clinicalData.metadata?.clinicianName || uploadFormData.doctorName || "",
+        doctorName: metadata.clinicianName || uploadFormData.doctorName || "",
+        patientName: metadata.patientName || "",
+        patientAge: metadata.patientAge || "",
+        patientSex: metadata.patientSex || "",
+        patientIdentifier: metadata.patientIdentifier || "",
         reportDate: extractedReportDate,
         visitDate: configuredVisitDate,
         uploadTimestamp: new Date().toISOString(),
         isDateUncertain,
-        date: extractedReportDate ? new Date(extractedReportDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : null,
+        isVisitDateUncertain,
+        date: formatClinicalDate(extractedReportDate),
         timestamp: new Date().toISOString(),
         status: "Processed",
         biomarkersCount: mappedBiomarkers.length,
@@ -932,72 +886,54 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  const confirmExtractedDraft = async () => {
-    if (extractedDraft) {
-      if (!extractedDraft.reportDate) {
-        throw new Error('Please confirm the clinical report date before saving.');
-      }
-      const cleanReportDate = extractedDraft.reportDate;
-      const cleanVisitDate = extractedDraft.visitDate || cleanReportDate;
-
-      try {
-        let base64Content = null;
-        if (uploadFormData.selectedFile?.rawFile) {
-          const reader = new FileReader();
-          base64Content = await new Promise((resolve) => {
-            reader.onload = () => resolve(reader.result.split(',')[1]);
-            reader.readAsDataURL(uploadFormData.selectedFile.rawFile);
-          });
-        }
-
-        const sessionKey = `hc-ingest-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-
-        const persisted = await apiClient.reports.uploadReport({
-          hospitalId: extractedDraft.hospitalId,
-          hospitalName: extractedDraft.hospitalName || "Unidentified facility",
-          hospitalBranch: extractedDraft.hospitalBranch || null,
-          hospitalLocation: extractedDraft.hospitalLocation || null,
-          hospitalDepartment: extractedDraft.hospitalDepartment || null,
-          visitDate: cleanVisitDate,
-          reportDate: cleanReportDate,
-          title: extractedDraft.title,
-          category: extractedDraft.category || extractedDraft.reportType || 'Lab Report',
-          physicianName: extractedDraft.doctorName || null,
-          idempotencyKey: sessionKey,
-          base64Content: base64Content || 'JVBERi0xLjQKJcTl8uXrCjEgMCBvYmoKPDwKL1R5cGUgL0NhdGFsb2cKL1BhZ2VzIDIgMCBSCj4+CmVuZG9iagoyIDAgb2JqCjw8Ci9UeXBlIC9QYWdlcwovS2lkcyBbMyAwIFJdCi9Db3VudCAxCj4+CmVuZG9iagozIDAgb2JqCjw8Ci9UeXBlIC9QYWdlCi9QYXJlbnQgMiAwIFIKL01lZGlhQm94IFswIDAgNjEyIDc5Ml0KL0NvbnRlbnRzIDQgMCBSCj4+CmVuZG9iago0IDAgb2JqCjw8Ci9MZW5ndGggNTYKPj4Kc3RyZWFtCkJUCi9GMSAxMiBUZgoxMDAgNzAwIFRkCihBUE9MTE8gSE9TUElUQUwgQ0JDIFJFUE9SVCkgVGoKRVQKZW5kc3RyZWFtCmVuZG9iagp4cmVmCjAgNQowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDkgMDAwMDAgbiAKMDAwMDAwMDA1OCAwMDAwMCBuIAowMDAwMDAwMTE1IDAwMDAwIG4gCjAwMDAwMDAyMDkgMDAwMDAgbiAKdHJhaWxlcgo8PAovU2l6ZSA1Ci9Sb290IDEgMCBSCj4+CnN0YXJ0eHJlZgoxMjM0CiUlRU9GCg==',
-          fileName: uploadFormData.selectedFile?.name || `${extractedDraft.title}.pdf`,
-          mimeType: uploadFormData.selectedFile?.type || 'application/pdf',
-          ocrResult: extractedDraft.rawOcr || extractedDraft.rawAnalysis?.rawOcr || null,
-          aiAnalysis: extractedDraft.rawAnalysis || {
-            documentType: extractedDraft.category || 'Lab Report',
-            plainLanguageSummary: {
-              overview: extractedDraft.aiSummary
-            },
-            extractedBiomarkers: extractedDraft.biomarkers || []
-          }
-        });
-
-        if (persisted && persisted.id) {
-          extractedDraft.id = persisted.id;
-          extractedDraft.signedDownloadUrl = persisted.signedDownloadUrl;
-          setActiveReportId(persisted.id);
-        } else {
-          setActiveReportId(extractedDraft.id);
-        }
-
-        // Refresh database state from backend
-        await refreshBackendData();
-      } catch (saveErr) {
-        console.warn('[ConfirmDraft] Backend persistence warning:', saveErr.message);
-      }
-
-      // Add to reports in local state as well
-      setReports(prev => [extractedDraft, ...prev.filter(r => r.id !== extractedDraft.id)]);
-      setActiveReportId(extractedDraft.id);
-
-      setCurrentScreen('report_details');
-      setExtractedDraft(null);
+  const confirmExtractedDraft = async (draftOverride = extractedDraft) => {
+    const draft = draftOverride;
+    if (!draft) return;
+    if (!draft.reportDate || !/^\d{4}-\d{2}-\d{2}$/.test(draft.reportDate)) {
+      throw new Error('Please confirm a valid report date before saving.');
     }
+    if (!draft.visitDate || !/^\d{4}-\d{2}-\d{2}$/.test(draft.visitDate)) {
+      throw new Error('Please confirm a valid clinical encounter date before saving.');
+    }
+
+    const rawFile = uploadFormData.selectedFile?.rawFile;
+    if (!rawFile) {
+      throw new Error('The original document file is no longer available. Please upload the report again before saving so its original file can be stored securely.');
+    }
+
+    const cleanReportDate = draft.reportDate;
+    const cleanVisitDate = draft.visitDate;
+    const sessionKey = `hc-ingest-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    const aiAnalysis = buildPersistedClinicalAnalysis(draft.rawAnalysis || {}, draft.biomarkers || [], draft);
+    const body = new FormData();
+    body.append('document', rawFile, rawFile.name || uploadFormData.selectedFile?.name || `${draft.title || 'Medical_Report'}.pdf`);
+    if (draft.hospitalId) body.append('hospitalId', draft.hospitalId);
+    body.append('hospitalName', draft.hospitalName || 'Unidentified facility');
+    body.append('hospitalBranch', draft.hospitalBranch || '');
+    body.append('hospitalLocation', draft.hospitalLocation || '');
+    body.append('hospitalDepartment', draft.hospitalDepartment || '');
+    body.append('visitDate', cleanVisitDate);
+    body.append('reportDate', cleanReportDate);
+    body.append('title', draft.title || rawFile.name || 'Medical Report');
+    body.append('category', draft.category || draft.reportType || 'Lab Report');
+    body.append('documentType', (draft.category || draft.reportType) === 'Prescription' ? 'prescription' : 'lab_report');
+    body.append('physicianName', draft.doctorName || '');
+    body.append('idempotencyKey', sessionKey);
+    body.append('ocrResult', JSON.stringify(draft.rawOcr || draft.rawAnalysis?.rawOcr || {}));
+    body.append('aiAnalysis', JSON.stringify(aiAnalysis));
+
+    const persisted = await apiClient.reports.uploadReport(body);
+    if (!persisted?.id) {
+      throw new Error('The backend did not confirm that this report was saved. Please try again.');
+    }
+
+    const savedReport = mapSavedReport(persisted);
+    setReports(prev => [savedReport, ...prev.filter(r => r.id !== persisted.id)]);
+    setActiveReportId(persisted.id);
+    await refreshBackendData();
+    setActiveReportId(persisted.id);
+    setCurrentScreen('report_details');
+    setExtractedDraft(null);
   };
 
   // Conversational Multilingual Voice AI Query Handling

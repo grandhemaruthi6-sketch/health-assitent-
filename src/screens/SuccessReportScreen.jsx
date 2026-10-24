@@ -22,7 +22,7 @@ export const SuccessReportScreen = () => {
           Report Analyzed Successfully!
         </h1>
         <p className="text-xs text-slate-500 mt-1 max-w-[280px] leading-relaxed">
-          We extracted <span className="font-bold text-slate-800">{extractedDraft?.biomarkers?.length || 5} clinical markers</span> from your document.
+          We extracted <span className="font-bold text-slate-800">{extractedDraft?.biomarkers?.length ?? 0} clinical markers</span> from your document.
         </p>
 
         {/* Metadata Snapshot Card */}
@@ -31,7 +31,7 @@ export const SuccessReportScreen = () => {
             <div>
               <span className="text-[10px] text-slate-400 block">Detected Facility</span>
               <span className="text-xs font-bold text-slate-800">
-                {extractedDraft?.hospitalDetected ? extractedDraft.hospitalName : "Hospital not identified in document"}
+                {extractedDraft?.hospitalDetected ? extractedDraft.hospitalName : "Facility not identified"}
               </span>
             </div>
             <span className="text-[10px] font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200">
