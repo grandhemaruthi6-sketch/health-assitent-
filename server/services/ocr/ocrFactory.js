@@ -1,5 +1,6 @@
 import { GoogleDocumentAiProvider } from './googleDocumentAiProvider.js';
 import { MockOcrProvider } from './mockOcrProvider.js';
+import { TesseractLocalProvider } from './tesseractLocalProvider.js';
 
 let activeProviderInstance = null;
 
@@ -17,6 +18,13 @@ export function getOcrProvider(forcedProviderType = null) {
 
   let provider;
   switch (providerType.toLowerCase()) {
+    case 'tesseract-local':
+    case 'local-tesseract':
+    case 'tesseract':
+    case 'local':
+      provider = new TesseractLocalProvider();
+      break;
+
     case 'google-cloud-documentai':
     case 'documentai':
       provider = new GoogleDocumentAiProvider();
