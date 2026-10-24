@@ -828,36 +828,18 @@ export const AppProvider = ({ children }) => {
         formData.append('documentType', isPrescription ? 'prescription' : 'lab_report');
         formData.append('fileName', fileName);
 
-        const res = await fetch('/api/clinical/analyze', {
-          method: 'POST',
-          body: formData
-        });
-
-        const json = await res.json();
-        if (!res.ok || !json.success) {
-          throw json.error || new Error('Clinical analysis failed');
-        }
-        clinicalData = json.data;
+        clinicalData = await apiClient.clinical.analyzeDocument(formData);
       } else {
         // If sample was selected or base64 fallback
         const sampleBase64 = 'JVBERi0xLjQKJcTl8uXrCjEgMCBvYmoKPDwKL1R5cGUgL0NhdGFsb2cKL1BhZ2VzIDIgMCBSCj4+CmVuZG9iagoyIDAgb2JqCjw8Ci9UeXBlIC9QYWdlcwovS2lkcyBbMyAwIFJdCi9Db3VudCAxCj4+CmVuZG9iagozIDAgb2JqCjw8Ci9UeXBlIC9QYWdlCi9QYXJlbnQgMiAwIFIKL01lZGlhQm94IFswIDAgNjEyIDc5Ml0KL0NvbnRlbnRzIDQgMCBSCj4+CmVuZG9iago0IDAgb2JqCjw8Ci9MZW5ndGggNTYKPj4Kc3RyZWFtCkJUCi9GMSAxMiBUZgoxMDAgNzAwIFRkCihBUE9MTE8gSE9TUElUQUwgQ0JDIFJFUE9SVCkgVGoKRVQKZW5kc3RyZWFtCmVuZG9iagp4cmVmCjAgNQowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMDkgMDAwMDAgbiAKMDAwMDAwMDA1OCAwMDAwMCBuIAowMDAwMDAwMTE1IDAwMDAwIG4gCjAwMDAwMDAyMDkgMDAwMDAgbiAKdHJhaWxlcgo8PAovU2l6ZSA1Ci9Sb290IDEgMCBSCj4+CnN0YXJ0eHJlZgoxMjM0CiUlRU9GCg==';
         const isPrescription = uploadFormData.reportType?.id === 'prescription' || uploadFormData.reportType?.name === 'Prescription';
-        const res = await fetch('/api/clinical/analyze', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            base64Content: sampleBase64,
-            mimeType: 'application/pdf',
-            category: uploadFormData.reportType?.name,
-            documentType: isPrescription ? 'prescription' : 'lab_report',
-            fileName
-          })
+        clinicalData = await apiClient.clinical.analyzeDocument({
+          base64Content: sampleBase64,
+          mimeType: 'application/pdf',
+          category: uploadFormData.reportType?.name,
+          documentType: isPrescription ? 'prescription' : 'lab_report',
+          fileName
         });
-        const json = await res.json();
-        if (!res.ok || !json.success) {
-          throw json.error || new Error('Clinical analysis failed');
-        }
-        clinicalData = json.data;
       }
 
       setUploadProgress(75);
@@ -1174,19 +1156,9 @@ export const AppProvider = ({ children }) => {
       formData.append('document', file);
       formData.append('fileName', file.name || 'Voice_Upload_Report.pdf');
 
-      const res = await fetch('/api/clinical/analyze', {
-        method: 'POST',
-        body: formData
-      });
-
-      const json = await res.json();
-      if (!res.ok || !json.success) {
-        throw new Error(json.error?.message || 'Failed to analyze report');
-      }
-
-      const clinicalData = json.data;
-      const detectedDate = clinicalData.metadata?.documentDate || new Date().toISOString().split('T')[0];
-      const detectedHospital = clinicalData.metadata?.facilityName || 'Apollo Hospital';
+      const clinicalData = await apiClient.clinical.analyzeDocument(formData);
+      const detectedDate = clinicalData.metadata?.documentDate || null;
+      const detectedHospital = clinicalData.metadata?.facilityName || 'Unidentified facility';
       const detectedDoctor = clinicalData.metadata?.clinicianName || '';
 
       const draft = {

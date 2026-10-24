@@ -3,7 +3,35 @@
  * Connects frontend React components to persistent backend endpoints.
  */
 
-const API_BASE = '/api';
+const configuredApiBase = import.meta.env?.VITE_API_BASE_URL?.trim();
+const normalizedApiBase = configuredApiBase ? configuredApiBase.replace(/\\/+$/, '') : '';
+const API_BASE = normalizedApiBase
+  ? (normalizedApiBase.endsWith('/api') ? normalizedApiBase : `${normalizedApiBase}/api`)
+  : '/api';
+
+/** Parse API responses and report HTML fallbacks as routing/configuration errors. */
+export async function parseApiResponse(response) {
+  const contentType = response.headers?.get?.('content-type')?.toLowerCase() || '';
+  const isJson = contentType.includes('application/json') || contentType.includes('+json');
+  if (!isJson) {
+    const body = await response.text().catch(() => '');
+    const isHtml = /<\s*!doctype\s+html|<html[\s>]/i.test(body);
+    const error = new Error(isHtml
+      ? 'The API returned an HTML page instead of JSON. Check VITE_API_BASE_URL and confirm the backend API is deployed and reachable.'
+      : `The API returned a non-JSON response (HTTP ${response.status}).`);
+    error.code = 'API_NON_JSON_RESPONSE';
+    error.status = response.status;
+    throw error;
+  }
+  try {
+    return await response.json();
+  } catch {
+    const error = new Error('The API returned invalid JSON. Check the backend logs for the original error.');
+    error.code = 'API_INVALID_JSON_RESPONSE';
+    error.status = response.status;
+    throw error;
+  }
+}
 
 export const apiClient = {
   // Token helper
@@ -50,7 +78,7 @@ export const apiClient = {
       headers
     });
 
-    const data = await res.json().catch(() => ({}));
+    const data = await parseApiResponse(res);
 
     if (!res.ok) {
       const err = new Error(data.error?.message || `Request failed with status ${res.status}`);
@@ -61,6 +89,23 @@ export const apiClient = {
     }
 
     return data;
+  },
+
+  // Clinical OCR + extraction + analysis
+  clinical: {
+    async analyzeDocument(payload) {
+      const body = typeof FormData !== 'undefined' && payload instanceof FormData
+        ? payload
+        : JSON.stringify(payload);
+      const response = await apiClient.request('/clinical/analyze', { method: 'POST', body });
+      if (!response.success || !response.data) {
+        const error = new Error(response.error?.message || 'Clinical analysis did not return a result.');
+        error.code = response.error?.code || 'CLINICAL_ANALYSIS_FAILED';
+        error.details = response.error?.details || null;
+        throw error;
+      }
+      return response.data;
+    }
   },
 
   // ==========================================================================
