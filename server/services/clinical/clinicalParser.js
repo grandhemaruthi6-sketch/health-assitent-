@@ -1841,7 +1841,7 @@ export function extractDocumentMetadata(fullText, pages = []) {
   const headerLines = lines.slice(0, 30);
 
   const labelledFacility = text.match(/\b(?:facility\s*name|laboratory\s*name|lab\s*name|hospital\s*name|clinic\s*name|diagnostic\s*centre\s*name|diagnostic\s*center\s*name)\s*[:：=-]\s*([^\r\n]{2,90})/i)?.[1] || null;
-  const facilitySuffix = /(?:hospital|labs?|laborator(?:y|ies)|clinics?|diagnostics?|diagnostic\s+(?:centre|center)|medical\s+(?:centre|center)|healthcare|health\s+system|pathology|medical\s+institute|medical\s+college|health\s+services|associates|medical\s+trust|health\s+centre|health\s+center)$/i;
+  const facilitySuffix = /(?:hospitals?|labs?|laborator(?:y|ies)|clinics?|diagnostics?|diagnostic\s+(?:centre|center)|medical\s+(?:centre|center)|healthcare|health\s+system|pathology|medical\s+institute|medical\s+college|health\s+services|associates|medical\s+trust|health\s+centre|health\s+center)$/i;
   const rejectFacilityLine = /(?:laboratory investigation report|investigation report|test report|clinical biochemistry|clinical pathology|kidney function test|complete blood count|reference range|patient name|collection date|reporting date|specimen date|sample date|bill\s+to|page\s+\d+)/i;
   const facilityLine = headerLines.find(line =>
     line.length >= 4 && line.length <= 90 &&
