@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>HealthCopilot AI - Loading State</title>
+<!-- Tailwind CSS CDN with forms and container queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration for HealthCopilot AI Design System -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              primary: '#009488',
+              secondary: '#0264C7',
+              accent: '#06B6D4',
+              soft: '#E6F6F6',
+              surface: '#F8FAFC'
+            }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Animation Styles -->
+<style data-purpose="spinner-animation">
+    @keyframes spin-slow {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes pulse-subtle {
+      0%, 100% {
+        opacity: 0.9;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.02);
+      }
+    }
+
+    .animate-spin-custom {
+      animation: spin-slow 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    .animate-pulse-subtle {
+      animation: pulse-subtle 2.5s ease-in-out infinite;
+    }
+  </style>
+<!-- END: Custom Animation Styles -->
+<style data-purpose="viewport-reset">
+    body {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 flex items-center justify-center min-h-screen p-0 sm:p-4 text-slate-800 antialiased selection:bg-teal-100">
+<!-- BEGIN: Mobile Device Frame -->
+<main class="w-full max-w-[393px] h-[852px] bg-white sm:rounded-[48px] shadow-2xl relative flex flex-col justify-between overflow-hidden border border-slate-100" data-purpose="mobile-ios-container">
+<!-- BEGIN: iOS Status Bar -->
+<header class="w-full pt-3 px-7 flex justify-between items-center z-20 text-slate-900" data-purpose="ios-status-bar">
+<!-- Time Display -->
+<span class="text-[15px] font-semibold tracking-tight" data-purpose="status-time">9:41</span>
+<!-- Right Status Icons -->
+<div class="flex items-center space-x-2 text-[14px]" data-purpose="status-icons">
+<!-- Cellular Signal Icon -->
+<svg aria-label="Signal Strength" class="w-4 h-3.5 fill-current" fill="none" viewbox="0 0 17 12" xmlns="http://www.w3.org/2000/svg">
+<rect height="4" rx="0.8" width="3" x="0" y="8"></rect>
+<rect height="6.5" rx="0.8" width="3" x="4.5" y="5.5"></rect>
+<rect height="9" rx="0.8" width="3" x="9" y="3"></rect>
+<rect height="11.5" rx="0.8" width="3" x="13.5" y="0.5"></rect>
+</svg>
+<!-- Wi-Fi Icon -->
+<svg aria-label="Wi-Fi" class="w-4 h-3.5 fill-current" fill="none" viewbox="0 0 16 12" xmlns="http://www.w3.org/2000/svg">
+<path d="M8 12C9.10457 12 10 11.1046 10 10C10 8.89543 9.10457 8 8 8C6.89543 8 6 8.89543 6 10C6 11.1046 6.89543 12 8 12Z"></path>
+<path clip-rule="evenodd" d="M3.75736 5.75736C6.10051 3.41421 9.89949 3.41421 12.2426 5.75736L13.6569 4.34315C10.5327 1.21895 5.46734 1.21895 2.34315 4.34315L3.75736 5.75736Z" fill-rule="evenodd"></path>
+<path clip-rule="evenodd" d="M1.34315 2.34315C5.01421 -1.32791 10.9858 -1.32791 14.6569 2.34315L16.0711 0.928932C11.6193 -3.52288 4.38071 -3.52288 -0.0710678 0.928932L1.34315 2.34315Z" fill-rule="evenodd"></path>
+</svg>
+<!-- Battery Icon -->
+<div class="flex items-center">
+<div class="w-[22px] h-[11.5px] border-[1.5px] border-slate-900 rounded-[3.5px] p-[1.5px] flex items-center">
+<div class="h-full w-full bg-slate-900 rounded-[1.5px]"></div>
+</div>
+<div class="w-[1.5px] h-[4px] bg-slate-900 rounded-r-full ml-[1px]"></div>
+</div>
+</div>
+</header>
+<!-- END: iOS Status Bar -->
+<!-- BEGIN: Screen Title Bar -->
+<div class="pt-5 pb-2 px-6 flex items-center justify-between" data-purpose="screen-header">
+<div class="flex items-center space-x-2">
+<span class="text-xs uppercase font-semibold tracking-wider text-slate-400">Detailed Results</span>
+</div>
+</div>
+<!-- END: Screen Title Bar -->
+<!-- BEGIN: Main Loading Content Area -->
+<section class="flex-1 flex flex-col items-center justify-center px-8 relative -mt-10" data-purpose="loading-state-content">
+<!-- Animated Circular Progress Ring Container -->
+<div class="relative w-36 h-36 flex items-center justify-center mb-9 animate-pulse-subtle" data-purpose="spinner-wrapper">
+<!-- SVG Progress Indicator -->
+<svg class="w-full h-full transform -rotate-90" fill="none" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<!-- Subtle Background Circle Track -->
+<circle cx="50" cy="50" r="42" stroke="#E2F5F5" stroke-linecap="round" stroke-width="5"></circle>
+<!-- Foreground Animated Progress Stroke -->
+<circle class="animate-spin-custom origin-center" cx="50" cy="50" r="42" stroke="url(#tealCyanGradient)" stroke-dasharray="264" stroke-dashoffset="175" stroke-linecap="round" stroke-width="5.5"></circle>
+<!-- Color Gradient Definition matching HealthCopilot AI Palette -->
+<defs>
+<lineargradient id="tealCyanGradient" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#06B6D4"></stop>
+<stop offset="100%" stop-color="#009488"></stop>
+</lineargradient>
+</defs>
+</svg>
+<!-- Soft Center Ambient Glow Element -->
+<div aria-hidden="true" class="absolute w-20 h-20 rounded-full bg-cyan-50/60 blur-md pointer-events-none -z-10"></div>
+</div>
+<!-- Text Messaging Block -->
+<div class="text-center max-w-[280px]" data-purpose="loading-message-block">
+<!-- Primary Headline -->
+<h1 class="text-[20px] font-bold text-slate-800 tracking-tight leading-snug mb-2" data-purpose="loading-heading">
+          Loading your health data...
+        </h1>
+<!-- Supporting Subtitle -->
+<p class="text-[15px] text-slate-500 font-normal leading-relaxed" data-purpose="loading-subtitle">
+          This won't take long.
+        </p>
+</div>
+</section>
+<!-- END: Main Loading Content Area -->
+<!-- BEGIN: iOS Home Indicator -->
+<footer class="w-full pb-3 flex justify-center items-center" data-purpose="ios-home-bar">
+<div class="w-36 h-1.5 bg-slate-300 rounded-full"></div>
+</footer>
+<!-- END: iOS Home Indicator -->
+</main>
+<!-- END: Mobile Device Frame -->
+</body></html>

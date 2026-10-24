@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Microphone Access Denied - HealthCopilot AI</title>
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              primary: '#009488',
+              'primary-hover': '#007a70',
+              secondary: '#00264C',
+              accent: '#D5F1DA',
+              light: '#E6F6F5',
+              surface: '#F8FAFC',
+              muted: '#64748B',
+            }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+          },
+          boxShadow: {
+            'modal': '0 20px 40px -15px rgba(0, 38, 76, 0.1)',
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Style Blocks -->
+<style data-purpose="base-layout">
+    body {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+  </style>
+<!-- END: Style Blocks -->
+</head>
+<body class="bg-slate-100 flex items-center justify-center min-h-screen p-4">
+<!-- BEGIN: PermissionModalCard -->
+<div class="w-full max-w-[340px] bg-white rounded-3xl p-6 shadow-modal border border-slate-100 relative flex flex-col items-center" data-purpose="permission-modal-container">
+<!-- BEGIN: TopBarClose -->
+<!-- Top header with dismiss action -->
+<div class="w-full flex justify-end" data-purpose="modal-header">
+<button aria-label="Close dialog" class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-brand-primary" data-purpose="close-button" type="button">
+<svg class="w-5 h-5 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+<!-- END: TopBarClose -->
+<!-- BEGIN: ModalContent -->
+<div class="flex flex-col items-center text-center mt-2 px-2" data-purpose="modal-body">
+<!-- Icon illustration container -->
+<div class="w-24 h-24 rounded-full bg-brand-light flex items-center justify-center relative mb-6 shadow-sm" data-purpose="icon-badge">
+<!-- Central Microphone Icon -->
+<svg class="w-10 h-10 text-brand-primary" data-purpose="microphone-icon" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+<!-- Sub-indicator: Search / Query symbol in lower corner -->
+<span class="absolute bottom-2 right-2 bg-white rounded-full p-1 shadow-sm text-brand-primary flex items-center justify-center border border-slate-100" data-purpose="sub-badge-icon">
+<svg class="w-3.5 h-3.5 stroke-[2.2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M21 21l-4.35-4.35m1.35-5.65a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</span>
+</div>
+<!-- Headline -->
+<h2 class="text-[19px] font-bold text-slate-800 tracking-tight leading-snug mb-2" data-purpose="modal-title">
+        Microphone access denied
+      </h2>
+<!-- Subtitle & Context Explanation -->
+<p class="text-[14px] text-brand-muted leading-relaxed max-w-[220px] mb-8 font-normal" data-purpose="modal-description">
+        We need microphone permission to use voice assistant.
+      </p>
+</div>
+<!-- END: ModalContent -->
+<!-- BEGIN: ActionButtons -->
+<div class="w-full flex flex-col items-center gap-3" data-purpose="actions-container">
+<!-- Primary Action: Open Settings -->
+<button class="w-full py-3.5 px-6 bg-brand-primary hover:bg-brand-primary-hover active:scale-[0.99] text-white font-semibold text-[15px] rounded-full shadow-sm shadow-teal-500/20 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary" data-purpose="primary-action-button" type="button">
+        Open Settings
+      </button>
+<!-- Secondary Action: Text Fallback -->
+<button class="py-2 px-4 text-brand-muted hover:text-slate-800 active:text-slate-900 font-medium text-[14px] transition-colors duration-150 focus:outline-none focus:underline" data-purpose="secondary-action-link" type="button">
+        Try Text Instead
+      </button>
+</div>
+<!-- END: ActionButtons -->
+</div>
+<!-- END: PermissionModalCard -->
+</body></html>

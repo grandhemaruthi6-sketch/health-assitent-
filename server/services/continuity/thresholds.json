@@ -1,0 +1,44 @@
+{
+  "lab_thresholds": {
+    "hba1c": {
+      "min_change_absolute": 1.0,
+      "alert_on_improvement": false,
+      "severity": "medium",
+      "canonical_unit": "%"
+    },
+    "wbc_count": {
+      "min_change_percent": 50.0,
+      "severity": "medium",
+      "canonical_unit": "/mm3"
+    },
+    "platelet_count": {
+      "min_change_percent": 40.0,
+      "severity": "medium",
+      "canonical_unit": "/mm3"
+    },
+    "creatinine": {
+      "min_change_percent": 35.0,
+      "min_change_absolute": 0.4,
+      "severity": "high",
+      "canonical_unit": "mg/dL"
+    },
+    "fasting_blood_glucose": {
+      "min_change_percent": 40.0,
+      "severity": "medium",
+      "canonical_unit": "mg/dL"
+    },
+    "default": {
+      "min_change_percent": 50.0,
+      "severity": "low"
+    }
+  },
+  "severity_defaults": {
+    "MED_DOSE_CHANGE": "medium",
+    "MED_FREQ_CHANGE": "medium",
+    "MED_ADDED": "low",
+    "MED_STOPPED": "medium",
+    "LAB_SIGNIFICANT_CHANGE": "medium",
+    "MISSING_EVIDENCE": "high",
+    "MISSING_FOLLOWUP": "medium"
+  }
+}

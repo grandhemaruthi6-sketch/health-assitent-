@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>HealthCopilot AI - AI Extracted Results Review</title>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration for Custom Colors Matching Design System -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              teal: '#009688',
+              'teal-dark': '#00796B',
+              'teal-light': '#E0F2F1',
+            },
+            status: {
+              'normal-bg': '#E8F5E9',
+              'normal-text': '#2E7D32',
+              'high-bg': '#FFEBEE',
+              'high-text': '#D32F2F',
+              'low-bg': '#FFF8E1',
+              'low-text': '#F57C00',
+            }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<!-- Custom CSS for iOS status bar and subtle refinements -->
+<style data-purpose="layout-and-reset">
+    body {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background-color: #F8FAFC;
+    }
+    /* Hide scrollbars for slick app look */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+</head>
+<body class="bg-[#F8FAFC] text-slate-800 flex justify-center items-start min-h-screen">
+<!-- Mobile Device Simulation Frame (iOS Canvas) -->
+<div class="w-full max-w-md min-h-screen bg-white shadow-xl flex flex-col justify-between relative overflow-hidden" data-purpose="mobile-viewport">
+<div>
+<!-- BEGIN: iOS StatusBar -->
+<header class="w-full px-6 pt-3 pb-1 flex justify-between items-center text-xs font-semibold text-slate-900 bg-white" data-purpose="ios-status-bar">
+<span>9:41</span>
+<div class="flex items-center space-x-1.5">
+<!-- Cellular Icon -->
+<svg class="w-3.5 h-3.5 fill-current" viewbox="0 0 24 24">
+<path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 18.23C2.89 16.48 2 14.34 2 12 2 6.48 6.48 2 12 2s10 4.48 10 10c0 2.34-.89 4.48-2.35 6.23l-.62-.62C20.26 16.07 21 14.12 21 12c0-4.97-4.03-9-9-9zm0 4c-2.76 0-5 2.24-5 5 0 1.28.48 2.45 1.28 3.34l.71-.71C8.38 13.97 8 13.03 8 12c0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.03-.38 1.97-.99 2.63l.71.71c.8-.89 1.28-2.06 1.28-3.34 0-2.76-2.24-5-5-5zm0 8a2 2 0 100-4 2 2 0 000 4z"></path>
+</svg>
+<!-- Wifi Icon -->
+<svg class="w-3.5 h-3.5 fill-current" viewbox="0 0 24 24">
+<path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98A17.88 17.88 0 0012 4zm0 2c4.13 0 7.87 1.62 10.65 4.25L12 19.12 1.35 10.25C4.13 7.62 7.87 6 12 6z"></path>
+</svg>
+<!-- Battery Icon -->
+<div class="w-5 h-2.5 border border-slate-900 rounded-sm p-0.5 flex items-center">
+<div class="h-full w-3 bg-slate-900 rounded-2xs"></div>
+</div>
+</div>
+</header>
+<!-- END: iOS StatusBar -->
+<!-- BEGIN: Navigation Header -->
+<nav class="flex items-center justify-between px-4 py-3 bg-white border-b border-slate-100" data-purpose="app-navigation-bar">
+<!-- Back Navigation Button -->
+<button aria-label="Go back" class="p-1 -ml-1 text-slate-700 hover:text-slate-900 transition-colors focus:outline-none" type="button">
+<svg class="w-6 h-6 stroke-current stroke-2 fill-none" viewbox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Screen Title -->
+<h1 class="text-base font-bold text-slate-900 tracking-tight">AI Extracted Results Review</h1>
+<!-- Share / Options Action -->
+<button aria-label="Share results" class="p-1 -mr-1 text-slate-700 hover:text-slate-900 transition-colors focus:outline-none" type="button">
+<svg class="w-5 h-5 stroke-current stroke-2 fill-none" viewbox="0 0 24 24">
+<path d="M4 12v7a2 2 0 002 2h12a2 2 0 002-2v-7m-4-5l-4-4m0 0L8 7m4-4v12" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</nav>
+<!-- END: Navigation Header -->
+<!-- BEGIN: Main Content Area -->
+<main class="px-4 py-3" data-purpose="results-content">
+<!-- Extracted Results Table Card -->
+<section class="bg-white rounded-xl shadow-xs border border-slate-100 overflow-hidden" data-purpose="lab-results-card">
+<!-- Table Header -->
+<div class="grid grid-cols-12 px-3.5 py-2.5 bg-slate-50/80 border-b border-slate-100 text-[11px] font-semibold tracking-wider text-slate-400 uppercase">
+<div class="col-span-5 flex items-center space-x-1">
+<span>Test Name</span>
+<svg class="w-2.5 h-2.5 inline fill-current text-slate-400" viewbox="0 0 20 20"><path d="M5 7l5 5 5-5H5z"></path></svg>
+</div>
+<div class="col-span-2 text-left">Value</div>
+<div class="col-span-3 text-center">Range</div>
+<div class="col-span-2 text-right">Status</div>
+</div>
+<!-- Lab Data Rows Container -->
+<div class="divide-y divide-slate-100/80 text-xs">
+<!-- Row 1: Hemoglobin -->
+<article class="grid grid-cols-12 px-3.5 py-3 items-center hover:bg-slate-50 transition-colors" data-purpose="lab-metric-row">
+<div class="col-span-5 font-semibold text-slate-800 pr-1">Hemoglobin</div>
+<div class="col-span-2 font-medium text-slate-700">13.2 <span class="text-[10px] text-slate-400">g/dL</span></div>
+<div class="col-span-3 text-center text-slate-400 font-normal text-[11px]">12.0 - 16.0</div>
+<div class="col-span-2 flex justify-end">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">
+                  Normal
+                </span>
+</div>
+</article>
+<!-- Row 2: WBC Count -->
+<article class="grid grid-cols-12 px-3.5 py-3 items-center hover:bg-slate-50 transition-colors" data-purpose="lab-metric-row">
+<div class="col-span-5 font-semibold text-slate-800 pr-1">WBC Count</div>
+<div class="col-span-2 font-semibold text-rose-600">11.2 <span class="text-[10px] text-rose-400">K/μL</span></div>
+<div class="col-span-3 text-center text-slate-400 font-normal text-[11px]">4.0 - 10.5</div>
+<div class="col-span-2 flex justify-end">
+<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[10px] font-medium bg-rose-50 text-rose-700 border border-rose-100">
+                  High <span class="text-[9px] font-bold">&gt;</span>
+</span>
+</div>
+</article>
+<!-- Row 3: Platelets -->
+<article class="grid grid-cols-12 px-3.5 py-3 items-center hover:bg-slate-50 transition-colors" data-purpose="lab-metric-row">
+<div class="col-span-5 font-semibold text-slate-800 pr-1">Platelets</div>
+<div class="col-span-2 font-medium text-slate-700">250 <span class="text-[10px] text-slate-400">K/μL</span></div>
+<div class="col-span-3 text-center text-slate-400 font-normal text-[11px]">150 - 450</div>
+<div class="col-span-2 flex justify-end">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">
+                  Normal
+                </span>
+</div>
+</article>
+<!-- Row 4: Glucose (Fasting) -->
+<article class="grid grid-cols-12 px-3.5 py-3 items-center hover:bg-slate-50 transition-colors" data-purpose="lab-metric-row">
+<div class="col-span-5 font-semibold text-slate-800 pr-1 leading-snug">
+                Glucose <span class="text-[10px] text-slate-400 font-normal block sm:inline">(Fasting)</span>
+</div>
+<div class="col-span-2 font-medium text-slate-700">96 <span class="text-[10px] text-slate-400">mg/dL</span></div>
+<div class="col-span-3 text-center text-slate-400 font-normal text-[11px]">70 - 99</div>
+<div class="col-span-2 flex justify-end">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">
+                  Normal
+                </span>
+</div>
+</article>
+<!-- Row 5: Cholesterol -->
+<article class="grid grid-cols-12 px-3.5 py-3 items-center hover:bg-slate-50 transition-colors" data-purpose="lab-metric-row">
+<div class="col-span-5 font-semibold text-slate-800 pr-1">Cholesterol</div>
+<div class="col-span-2 font-semibold text-rose-600">210 <span class="text-[10px] text-rose-400">mg/dL</span></div>
+<div class="col-span-3 text-center text-slate-400 font-normal text-[11px]">&lt; 200</div>
+<div class="col-span-2 flex justify-end">
+<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[10px] font-medium bg-rose-50 text-rose-700 border border-rose-100">
+                  High <span class="text-[9px] font-bold">&gt;</span>
+</span>
+</div>
+</article>
+<!-- Row 6: Vitamin D -->
+<article class="grid grid-cols-12 px-3.5 py-3 items-center hover:bg-slate-50 transition-colors" data-purpose="lab-metric-row">
+<div class="col-span-5 font-semibold text-slate-800 pr-1">Vitamin D</div>
+<div class="col-span-2 font-semibold text-amber-600">18 <span class="text-[10px] text-amber-500">ng/mL</span></div>
+<div class="col-span-3 text-center text-slate-400 font-normal text-[11px]">30 - 100</div>
+<div class="col-span-2 flex justify-end">
+<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-50 text-amber-700 border border-amber-200">
+                  Low <span class="text-[9px] font-bold">&gt;</span>
+</span>
+</div>
+</article>
+</div>
+</section>
+<!-- View Source Document Action Link -->
+<div class="mt-3.5 px-1" data-purpose="source-document-link">
+<button class="inline-flex items-center text-xs font-medium text-teal-600 hover:text-teal-700 transition-colors focus:outline-none" type="button">
+<svg class="w-4 h-4 mr-1.5 stroke-current stroke-2 fill-none" viewbox="0 0 24 24">
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>View Source</span>
+</button>
+</div>
+</main>
+<!-- END: Main Content Area -->
+</div>
+<!-- BEGIN: Bottom Action Area & Security Note -->
+<footer class="p-4 pb-7 bg-white flex flex-col items-center space-y-3" data-purpose="footer-actions">
+<!-- Primary Continue Action -->
+<button class="w-full py-3.5 px-4 bg-[#009688] hover:bg-[#00796B] active:scale-[0.99] text-white text-sm font-semibold rounded-xl shadow-md shadow-teal-500/20 transition-all flex items-center justify-center" type="button">
+        Continue
+      </button>
+<!-- Security / Encryption Disclaimer -->
+<div class="flex items-center space-x-1.5 text-center text-[11px] text-slate-400 font-normal">
+<svg class="w-3.5 h-3.5 stroke-current stroke-2 fill-none flex-shrink-0" viewbox="0 0 24 24">
+<path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<p class="leading-tight">
+          Your data is encrypted and secure. <br class="hidden sm:inline"/>We never share your information.
+        </p>
+</div>
+<!-- Home Indicator bar (iOS) -->
+<div class="w-32 h-1 bg-slate-300 rounded-full mt-2 opacity-60"></div>
+</footer>
+<!-- END: Bottom Action Area & Security Note -->
+</div>
+</body></html>

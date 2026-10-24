@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>HealthCopilot AI - Login</title>
+<!-- Tailwind CSS v3 CDN with forms and container queries plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              primary: '#009488',
+              secondary: '#0264C7',
+              accent: '#06B1DA',
+              surface: '#F8FAFC',
+              dark: '#0F172A',
+              muted: '#64748B',
+              border: '#E2E8F0',
+            }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Text"', '"SF Pro Display"', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-layout">
+    /* iOS frame setup and mobile centering */
+    body {
+      background-color: #EEF2F6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    .mobile-frame {
+      width: 100%;
+      max-width: 390px;
+      height: 844px;
+      max-height: 100vh;
+      border-radius: 44px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.18), 0 0 0 10px #ffffff, 0 0 0 12px #e2e8f0;
+      position: relative;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Hide standard input spin/clear decorations */
+    input::-ms-reveal,
+    input::-ms-clear {
+      display: none;
+    }
+  </style>
+</head>
+<body class="font-sans antialiased text-slate-800">
+<!-- BEGIN: MobileDeviceFrame -->
+<div class="mobile-frame" data-purpose="mobile-viewport">
+<!-- BEGIN: iOSStatusBar -->
+<header class="w-full pt-3 px-7 flex justify-between items-center z-20 shrink-0 select-none" data-purpose="ios-status-bar">
+<!-- Time Indicator -->
+<span class="text-[14px] font-semibold tracking-tight text-slate-900">9:41</span>
+<!-- Dynamic Island / Sensor Notch Placeholder -->
+<div class="w-28 h-4 bg-slate-950/0 rounded-full"></div>
+<!-- Device Status Icons -->
+<div class="flex items-center space-x-1.5 text-slate-900">
+<!-- Cellular Signal Icon -->
+<svg class="w-4 h-3.5 fill-current" viewbox="0 0 17 12">
+<rect height="3" rx="0.6" width="2.5" x="0" y="9"></rect>
+<rect height="6" rx="0.6" width="2.5" x="4.5" y="6"></rect>
+<rect height="9" rx="0.6" width="2.5" x="9" y="3"></rect>
+<rect height="12" rx="0.6" width="2.5" x="13.5" y="0"></rect>
+</svg>
+<!-- Wi-Fi Icon -->
+<svg class="w-3.5 h-3.5 fill-current" viewbox="0 0 16 12">
+<path d="M8 9.8a1.6 1.6 0 1 0 0 3.2 1.6 1.6 0 0 0 0-3.2zm-4.2-3a5.9 5.9 0 0 1 8.4 0 .7.7 0 0 0 1-.9A7.3 7.3 0 0 0 2.8 5.9a.7.7 0 1 0 1 .9zm-3-3a10.1 10.1 0 0 1 14.4 0 .7.7 0 0 0 1-1A11.5 11.5 0 0 0 .8 2.8a.7.7 0 1 0 1 1z"></path>
+</svg>
+<!-- Battery Icon -->
+<svg class="w-5 h-3 text-slate-900" fill="none" stroke="currentColor" viewbox="0 0 24 12">
+<rect height="11" rx="3" stroke-width="1.2" width="20" x="0.5" y="0.5"></rect>
+<rect fill="currentColor" height="8" rx="1.5" width="15" x="2" y="2"></rect>
+<path d="M22 4.5v3" stroke-linecap="round" stroke-width="1.2"></path>
+</svg>
+</div>
+</header>
+<!-- END: iOSStatusBar -->
+<!-- BEGIN: BrandHeader -->
+<div class="px-6 pt-4 pb-2 flex items-center justify-start shrink-0" data-purpose="app-branding">
+<div class="flex items-center space-x-2">
+<!-- Health Heart-Pulse Logo -->
+<div class="w-6 h-6 rounded-full bg-[#009488] flex items-center justify-center text-white shadow-sm shadow-[#009488]/30">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold text-slate-900 tracking-tight">HealthCopilot AI</span>
+</div>
+</div>
+<!-- END: BrandHeader -->
+<!-- BEGIN: MainContent -->
+<main class="flex-1 px-6 pt-4 pb-8 flex flex-col justify-between overflow-y-auto" data-purpose="login-content">
+<!-- Top Section: Titles & Credentials Form -->
+<div class="w-full">
+<!-- Title and Welcome Subtitle -->
+<div class="mb-7">
+<h1 class="text-2xl font-bold text-slate-900 tracking-tight mb-1.5">Welcome Back</h1>
+<p class="text-xs text-slate-500 font-normal">Sign in to continue to your health journey.</p>
+</div>
+<!-- Form Elements -->
+<form class="space-y-4" data-purpose="sign-in-form" onsubmit="event.preventDefault();">
+<!-- Email Input Field -->
+<div class="space-y-1.5">
+<label class="block text-xs font-medium text-slate-700" for="email">Email address</label>
+<input class="w-full h-11 px-3.5 rounded-lg border border-slate-200 bg-white text-slate-800 text-xs placeholder:text-slate-400 focus:outline-none focus:border-[#009488] focus:ring-1 focus:ring-[#009488] transition duration-150" id="email" name="email" placeholder="you@example.com" type="email"/>
+</div>
+<!-- Password Input Field -->
+<div class="space-y-1.5">
+<label class="block text-xs font-medium text-slate-700" for="password">Password</label>
+<div class="relative flex items-center">
+<input class="w-full h-11 pl-3.5 pr-10 rounded-lg border border-slate-200 bg-white text-slate-800 text-xs placeholder:text-slate-400 focus:outline-none focus:border-[#009488] focus:ring-1 focus:ring-[#009488] transition duration-150 tracking-widest" id="password" name="password" placeholder="Enter password" type="password" value="••••••••"/>
+<!-- Toggle Visibility Eye Icon -->
+<button aria-label="Toggle password visibility" class="absolute right-3.5 p-0.5 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors" onclick="const pwd = document.getElementById('password'); pwd.type = pwd.type === 'password' ? 'text' : 'password';" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewbox="0 0 24 24">
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- Forgot Password Link -->
+<div class="flex justify-end pt-0.5 pb-2">
+<a class="text-[11px] font-normal text-slate-400 hover:text-[#009488] transition-colors" href="#">Forgot password?</a>
+</div>
+<!-- Primary Sign In Action Button -->
+<button class="w-full h-11 bg-[#009488] hover:bg-[#008075] active:bg-[#007067] text-white text-sm font-semibold rounded-lg shadow-sm shadow-[#009488]/20 transition-colors flex items-center justify-center cursor-pointer" type="submit">
+            Sign In
+          </button>
+</form>
+<!-- Sign Up Anchor Link -->
+<div class="text-center mt-5">
+<p class="text-xs text-slate-500">
+            Don't have an account? 
+            <a class="font-medium text-[#009488] hover:underline ml-0.5" href="#">Sign Up</a>
+</p>
+</div>
+</div>
+<!-- Bottom Alternative Option: Continue as Guest -->
+<div class="w-full pt-6" data-purpose="guest-access-container">
+<!-- Guest Box Button -->
+<button class="w-full py-3.5 px-4 rounded-xl border border-dashed border-slate-300 hover:border-[#009488]/60 bg-slate-50/70 hover:bg-teal-50/30 transition-all text-center group cursor-pointer" type="button">
+<span class="block text-xs font-semibold text-slate-700 group-hover:text-[#009488] transition-colors">
+            Continue as Guest
+          </span>
+<span class="block text-[11px] text-slate-400 group-hover:text-slate-500 transition-colors mt-0.5">
+            Try the demo with sample reports
+          </span>
+</button>
+</div>
+</main>
+<!-- END: MainContent -->
+<!-- BEGIN: iOSHomeIndicator -->
+<footer class="w-full pb-2 pt-1 flex justify-center shrink-0" data-purpose="ios-home-bar">
+<div class="w-32 h-1 bg-slate-900/25 rounded-full"></div>
+</footer>
+<!-- END: iOSHomeIndicator -->
+</div>
+<!-- END: MobileDeviceFrame -->
+</body></html>

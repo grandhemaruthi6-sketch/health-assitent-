@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>HealthCopilot AI - Error State</title>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            teal: {
+              DEFAULT: '#00838F',
+              600: '#00838F',
+              700: '#006972',
+            },
+            danger: {
+              subtle: '#FFEBEE',
+              icon: '#FF5252',
+            }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<!-- Grouped CSS Styles -->
+<style data-purpose="custom-layout">
+    body {
+      -webkit-font-smoothing: antialiased;
+      background-color: #F8FAFC;
+    }
+    /* Mobile device wrapper container */
+    .mobile-frame {
+      min-height: 100vh;
+      max-width: 414px;
+      margin: 0 auto;
+      background-color: #FFFFFF;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+    }
+  </style>
+</head>
+<body class="flex items-center justify-center min-h-screen text-slate-800 bg-slate-100">
+<!-- BEGIN: MobileDeviceContainer -->
+<div class="mobile-frame w-full flex flex-col justify-between relative overflow-hidden" data-purpose="mobile-screen-wrapper">
+<!-- BEGIN: iOSStatusBar -->
+<!-- Top status bar with time, cellular, wifi, and battery icons -->
+<header class="w-full pt-3 px-6 flex justify-between items-center text-slate-900 select-none z-10" data-purpose="status-bar">
+<span class="text-xs font-semibold tracking-tight">9:41</span>
+<div class="flex items-center space-x-1.5">
+<!-- Signal strength -->
+<svg class="w-3.5 h-3.5 fill-current" viewbox="0 0 16 16">
+<rect height="4" rx="0.5" width="2" x="1" y="11"></rect>
+<rect height="7" rx="0.5" width="2" x="5" y="8"></rect>
+<rect height="10" rx="0.5" width="2" x="9" y="5"></rect>
+<rect height="13" rx="0.5" width="2" x="13" y="2"></rect>
+</svg>
+<!-- Wifi icon -->
+<svg class="w-3.5 h-3.5 fill-current" viewbox="0 0 16 16">
+<path d="M8 3.5a8.96 8.96 0 00-6.14 2.455.75.75 0 00.99 1.13A7.46 7.46 0 018 5c1.86 0 3.56.68 4.88 1.805a.75.75 0 00.99-1.13A8.96 8.96 0 008 3.5zm-4.14 4.545a5.47 5.47 0 017.96 0 .75.75 0 101.06-1.06 6.97 6.97 0 00-10.08 0 .75.75 0 001.06 1.06zm1.77 2.12a2.98 2.98 0 014.24 0 .75.75 0 001.06-1.06 4.48 4.48 0 00-6.36 0 .75.75 0 101.06 1.06zm1.66 2.375a1 1 0 111.42-1.42 1 1 0 01-1.42 1.42z" fill-rule="evenodd"></path>
+</svg>
+<!-- Battery icon -->
+<div class="w-5 h-2.5 border border-slate-900 rounded-sm p-0.5 flex items-center">
+<div class="w-full h-full bg-slate-900 rounded-2xs"></div>
+</div>
+</div>
+</header>
+<!-- END: iOSStatusBar -->
+<!-- BEGIN: ErrorStateContent -->
+<main class="flex-1 flex flex-col items-center justify-center px-8 text-center -mt-8" data-purpose="error-state-body">
+<!-- Icon Container: soft circular background with warning/exclamation mark -->
+<div class="w-20 h-20 rounded-full bg-red-50 flex items-center justify-center mb-6 shadow-sm ring-1 ring-red-100" data-purpose="error-icon-wrapper">
+<svg class="w-10 h-10 text-red-500" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="9" stroke="currentColor"></circle>
+<line stroke-linecap="round" x1="12" x2="12" y1="8" y2="12"></line>
+<circle cx="12" cy="16" fill="currentColor" r="0.8"></circle>
+</svg>
+</div>
+<!-- Error Headline -->
+<h1 class="text-xl font-bold text-slate-800 tracking-tight mb-2" data-purpose="error-headline">
+        Something went wrong
+      </h1>
+<!-- Subtitle Description -->
+<p class="text-sm text-slate-500 leading-relaxed max-w-xs mb-8" data-purpose="error-description">
+        We couldn't load your data.<br/>Please try again.
+      </p>
+<!-- Action Buttons -->
+<div class="w-full flex flex-col space-y-4" data-purpose="actions-container">
+<!-- Primary Action: Try Again -->
+<button class="w-full py-3.5 px-4 bg-[#00838F] hover:bg-[#006972] active:scale-[0.99] text-white font-medium text-sm rounded-xl transition duration-150 ease-in-out shadow-sm" data-purpose="retry-button" type="button">
+          Try Again
+        </button>
+<!-- Secondary Action: Go Back -->
+<button class="w-full py-2 text-sm font-medium text-slate-500 hover:text-slate-700 transition duration-150 ease-in-out" data-purpose="go-back-link" type="button">
+          Go Back
+        </button>
+</div>
+</main>
+<!-- END: ErrorStateContent -->
+<!-- BEGIN: iOSHomeIndicator -->
+<!-- iOS bottom indicator bar -->
+<footer class="w-full pb-2 pt-1 flex justify-center items-center" data-purpose="home-indicator-area">
+<div class="w-32 h-1 bg-slate-300 rounded-full"></div>
+</footer>
+<!-- END: iOSHomeIndicator -->
+</div>
+<!-- END: MobileDeviceContainer -->
+</body></html>

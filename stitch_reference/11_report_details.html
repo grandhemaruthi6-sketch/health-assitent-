@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HealthCopilot AI - Report Details</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              teal: '#008b8b',
+              'teal-dark': '#006d6d',
+              'teal-light': '#e6f7f6',
+              bg: '#f8fafc',
+            }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<!-- Layout Styles -->
+<style data-purpose="layout">
+    body {
+      background-color: #f1f5f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .mobile-frame {
+      width: 100%;
+      max-width: 390px;
+      height: 844px;
+      background-color: #f8fafc;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      border-radius: 40px;
+      border: 8px solid #1e293b;
+    }
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .mobile-frame::-webkit-scrollbar {
+      display: none;
+    }
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .mobile-frame {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+    }
+  </style>
+</head>
+<body class="bg-slate-100 p-0 sm:p-4">
+<!-- BEGIN: MobileDeviceFrame -->
+<main class="mobile-frame" data-purpose="screen-container">
+<!-- BEGIN: iOSStatusBar -->
+<header class="pt-3 px-7 pb-2 flex justify-between items-center text-xs font-semibold tracking-tight text-slate-800 shrink-0" data-purpose="ios-status-bar">
+<span>9:41</span>
+<div class="flex items-center space-x-1.5">
+<!-- Signal Strength Indicator -->
+<svg class="w-3.5 h-3.5 fill-current" viewbox="0 0 24 24">
+<path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L12 22l7.03-4.39C20.26 16.07 21 14.12 21 12c0-4.97-4.03-9-9-9zm0 2c3.87 0 7 3.13 7 7 0 1.55-.51 2.98-1.37 4.14L12 19.64l-5.63-3.5C5.51 14.98 5 13.55 5 12c0-3.87 3.13-7 7-7z"></path>
+</svg>
+<!-- Wi-Fi Icon -->
+<svg class="w-3.5 h-3.5 fill-current" viewbox="0 0 24 24">
+<path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98A16.88 16.88 0 0 0 12 4zm0 3.5c3.55 0 6.78 1.34 9.24 3.53L12 19.3 2.76 11.03C5.22 8.84 8.45 7.5 12 7.5z"></path>
+</svg>
+<!-- Battery Icon -->
+<div class="w-5 h-2.5 border border-slate-800 rounded-sm p-0.5 flex items-center">
+<div class="h-full w-3/4 bg-slate-800 rounded-2xs"></div>
+</div>
+</div>
+</header>
+<!-- END: iOSStatusBar -->
+<!-- BEGIN: TopNavigationBar -->
+<nav class="px-5 py-3 flex items-center shrink-0 bg-transparent" data-purpose="top-navigation">
+<button aria-label="Go back" class="p-1 -ml-1 text-slate-800 hover:text-slate-600 transition-colors" type="button">
+<svg class="w-5 h-5 stroke-current" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M19 12H5M12 19l-7-7 7-7"></path>
+</svg>
+</button>
+<h1 class="text-base font-bold text-slate-800 ml-3">Report Details</h1>
+</nav>
+<!-- END: TopNavigationBar -->
+<!-- Scrollable Content Container -->
+<div class="flex-1 px-5 pb-6 overflow-y-auto space-y-4">
+<!-- BEGIN: FileBannerCard -->
+<section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-start gap-3.5" data-purpose="file-summary-card">
+<!-- PDF Icon Badge -->
+<div class="w-11 h-11 bg-rose-50 text-rose-500 rounded-xl flex items-center justify-center font-bold text-xs shrink-0 tracking-wide">
+<div class="flex flex-col items-center leading-none">
+<svg class="w-5 h-5 fill-current mb-0.5" viewbox="0 0 24 24">
+<path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"></path>
+</svg>
+<span class="text-[9px] font-extrabold uppercase">PDF</span>
+</div>
+</div>
+<!-- File Details & Status -->
+<div class="flex-1 min-w-0">
+<h2 class="text-sm font-semibold text-slate-800 truncate" title="Lab_Report_Apr2025.pdf">
+            Lab_Report_Apr2025.pdf
+          </h2>
+<p class="text-[11px] text-slate-400 mt-0.5">
+            Uploaded on Apr 26, 2025 • 2.4 MB
+          </p>
+<div class="mt-2 flex items-center gap-1.5 text-emerald-600 bg-emerald-50 w-fit px-2 py-0.5 rounded-full text-[10px] font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span>Processed</span>
+</div>
+</div>
+</section>
+<!-- END: FileBannerCard -->
+<!-- BEGIN: TabSwitcher -->
+<div class="bg-slate-200/70 p-1 rounded-full flex gap-1 text-xs font-semibold" data-purpose="report-tab-switcher">
+<button class="flex-1 py-1.5 rounded-full bg-teal-700 text-white shadow-sm text-center transition-all" type="button">
+          Results
+        </button>
+<button class="flex-1 py-1.5 rounded-full text-slate-500 hover:text-slate-800 text-center transition-all" type="button">
+          Original Report
+        </button>
+</div>
+<!-- END: TabSwitcher -->
+<!-- BEGIN: ExtractedResultsCard -->
+<section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100" data-purpose="extracted-results-container">
+<!-- Section Header -->
+<h3 class="text-xs font-bold text-slate-900 mb-3 tracking-wide">
+          Extracted Results
+        </h3>
+<!-- Results List -->
+<div class="divide-y divide-slate-100">
+<!-- Row 1: Hemoglobin -->
+<article class="py-2.5 flex items-center justify-between text-xs" data-purpose="test-result-row">
+<div>
+<h4 class="font-semibold text-slate-800 text-[12px]">Hemoglobin</h4>
+<p class="text-[11px] text-slate-500 mt-0.5">13.2 g/dL</p>
+</div>
+<div class="text-right flex items-center gap-3">
+<span class="text-[11px] text-slate-400">12.0 - 16.0</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-600 min-w-[54px] justify-center">
+                Normal
+              </span>
+</div>
+</article>
+<!-- Row 2: WBC Count -->
+<article class="py-2.5 flex items-center justify-between text-xs" data-purpose="test-result-row">
+<div>
+<h4 class="font-semibold text-slate-800 text-[12px]">WBC Count</h4>
+<p class="text-[11px] text-slate-500 mt-0.5">11.2 K/μL</p>
+</div>
+<div class="text-right flex items-center gap-3">
+<span class="text-[11px] text-slate-400">4.0 - 10.5</span>
+<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-rose-50 text-rose-600 min-w-[54px] justify-center cursor-pointer">
+                High
+                <svg class="w-3 h-3 stroke-current" fill="none" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</span>
+</div>
+</article>
+<!-- Row 3: Platelets -->
+<article class="py-2.5 flex items-center justify-between text-xs" data-purpose="test-result-row">
+<div>
+<h4 class="font-semibold text-slate-800 text-[12px]">Platelets</h4>
+<p class="text-[11px] text-slate-500 mt-0.5">250 K/μL</p>
+</div>
+<div class="text-right flex items-center gap-3">
+<span class="text-[11px] text-slate-400">150 - 450</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-600 min-w-[54px] justify-center">
+                Normal
+              </span>
+</div>
+</article>
+</div>
+<!-- View Full Report Link -->
+<div class="mt-4 pt-1 text-center">
+<a class="text-xs font-semibold text-teal-700 hover:text-teal-800 inline-block transition-colors" data-purpose="view-full-report-link" href="#">
+            View Full Report
+          </a>
+</div>
+</section>
+<!-- END: ExtractedResultsCard -->
+<!-- BEGIN: DestructiveAction -->
+<div class="pt-2" data-purpose="action-delete-container">
+<button class="w-full py-2.5 px-4 rounded-xl border border-rose-200 bg-rose-50/50 hover:bg-rose-50 text-rose-600 font-semibold text-xs flex items-center justify-center gap-2 transition-colors" type="button">
+<svg class="w-4 h-4 stroke-current" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<polyline points="3 6 5 6 21 6"></polyline>
+<path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+</svg>
+<span>Delete Report</span>
+</button>
+</div>
+<!-- END: DestructiveAction -->
+</div>
+<!-- BEGIN: BottomNavigationBar -->
+<footer class="bg-white border-t border-slate-100 px-6 py-2 flex justify-between items-center shrink-0" data-purpose="bottom-navigation-bar">
+<!-- Home Tab -->
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 transition-colors" href="#">
+<svg class="w-5 h-5 stroke-current" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+<polyline points="9 22 9 12 15 12 15 22"></polyline>
+</svg>
+<span class="text-[10px] font-medium leading-none">Home</span>
+</a>
+<!-- Reports Tab (Active) -->
+<a class="flex flex-col items-center gap-1 text-teal-700 transition-colors" href="#">
+<svg class="w-5 h-5 stroke-current" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+<polyline points="14 2 14 8 20 8"></polyline>
+<line x1="16" x2="8" y1="13" y2="13"></line>
+<line x1="16" x2="8" y1="17" y2="17"></line>
+<polyline points="10 9 9 9 8 9"></polyline>
+</svg>
+<span class="text-[10px] font-bold leading-none">Reports</span>
+</a>
+<!-- Central Add/Scan Action Button -->
+<div class="relative -top-3">
+<button aria-label="Upload or Scan" class="w-10 h-10 rounded-full bg-teal-700 text-white flex items-center justify-center shadow-md hover:bg-teal-800 transition-colors" type="button">
+<svg class="w-5 h-5 stroke-current" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24">
+<line x1="12" x2="12" y1="5" y2="19"></line>
+<line x1="5" x2="19" y1="12" y2="12"></line>
+</svg>
+</button>
+</div>
+<!-- Timeline Tab -->
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 transition-colors" href="#">
+<svg class="w-5 h-5 stroke-current" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle>
+<polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+<span class="text-[10px] font-medium leading-none">Timeline</span>
+</a>
+<!-- Profile Tab -->
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 transition-colors" href="#">
+<svg class="w-5 h-5 stroke-current" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+<circle cx="12" cy="7" r="4"></circle>
+</svg>
+<span class="text-[10px] font-medium leading-none">Profile</span>
+</a>
+</footer>
+<!-- END: BottomNavigationBar -->
+<!-- Home Indicator (iOS Bar) -->
+<div class="w-full pb-2 flex justify-center bg-white shrink-0">
+<div class="w-32 h-1 bg-slate-300 rounded-full"></div>
+</div>
+</main>
+<!-- END: MobileDeviceFrame -->
+</body></html>

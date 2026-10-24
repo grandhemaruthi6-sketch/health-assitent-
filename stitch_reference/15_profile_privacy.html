@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Profile &amp; Privacy - HealthCopilot AI</title>
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration for HealthCopilot Theme -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              teal: '#009488',
+              tealLight: '#e6f7f5',
+              dark: '#1e293b',
+              graySub: '#64748b',
+              border: '#f1f5f9',
+              bgLight: '#f8fafc'
+            }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+<!-- Custom Styles for Mobile Device Preview & Micro-interactions -->
+<style data-purpose="custom-mobile-styling">
+    body {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .tap-effect:active {
+      background-color: #f1f5f9;
+      transform: scale(0.99);
+      transition: all 0.1s ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 flex justify-center items-center min-h-screen p-0 sm:p-4 antialiased text-slate-800">
+<!-- BEGIN: MobileDeviceFrame -->
+<div class="w-full max-w-[393px] h-[844px] max-h-screen bg-white sm:rounded-[44px] shadow-2xl overflow-hidden flex flex-col relative border border-slate-200" data-purpose="mobile-ios-container">
+<!-- BEGIN: iOSStatusBar -->
+<header class="w-full pt-3 px-7 flex justify-between items-center bg-white z-20 shrink-0">
+<!-- Time Display -->
+<span class="text-xs font-semibold tracking-tight text-slate-900">9:41</span>
+<!-- Notch / Dynamic Island Simulator on Top (visual) -->
+<div class="w-24 h-4 bg-transparent rounded-full"></div>
+<!-- iOS Status Icons -->
+<div class="flex items-center space-x-1.5">
+<!-- Cellular Signal -->
+<svg class="w-3.5 h-3.5 fill-current text-slate-900" viewbox="0 0 16 16">
+<path d="M1 11h2v3H1v-3zm4-3h2v6H5V8zm4-3h2v9H9V5zm4-3h2v12h-2V2z"></path>
+</svg>
+<!-- Wi-Fi -->
+<svg class="w-3.5 h-3.5 fill-current text-slate-900" viewbox="0 0 16 16">
+<path d="M8 12.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm-4.95-3.536a7 7 0 0 1 9.9 0l-1.06 1.06a5.5 5.5 0 0 0-7.78 0l-1.06-1.06zm-2.122-2.12A10 10 0 0 1 15.07 6.844l-1.06 1.06a8.5 8.5 0 0 0-12.02 0L.928 6.844z"></path>
+</svg>
+<!-- Battery Icon -->
+<div class="w-5 h-2.5 border border-slate-900 rounded-sm p-0.5 flex items-center">
+<div class="w-full h-full bg-slate-900 rounded-2xs"></div>
+</div>
+</div>
+</header>
+<!-- END: iOSStatusBar -->
+<!-- BEGIN: NavigationHeader -->
+<section class="px-5 py-3.5 flex items-center bg-white border-b border-slate-50 shrink-0" data-purpose="navigation-header">
+<button aria-label="Go back" class="p-1 -ml-1 text-slate-700 hover:text-slate-900 focus:outline-none tap-effect rounded-full" type="button">
+<!-- Left Arrow Icon -->
+<svg class="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<h1 class="text-[17px] font-bold text-slate-900 ml-3 tracking-tight">Profile &amp; Privacy</h1>
+</section>
+<!-- END: NavigationHeader -->
+<!-- BEGIN: MainScrollableContent -->
+<main class="flex-1 overflow-y-auto px-5 py-4 divide-y divide-slate-100" data-purpose="profile-settings-content">
+<!-- BEGIN: UserProfileCard -->
+<section class="pb-4" data-purpose="user-info-section">
+<a class="flex items-center justify-between p-3 rounded-2xl bg-slate-50/70 hover:bg-slate-100/70 transition-colors duration-150 tap-effect" href="#edit-profile">
+<div class="flex items-center space-x-3.5">
+<!-- User Profile Avatar Image -->
+<img alt="Priya Sharma" class="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm ring-1 ring-slate-200" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2QIActcPK8NpkOx6tqA4azzkGCmB74hlg1zxHNK_Md0JdA0tad536cWBzIn5o27c0TA96ssRa4otOa7oMNgKZ79oStpD9ssGS8qHE16964JP0juoVwoL-1WsB6GByZCAiuKRdpug4CmVGdlbLXBKld7PbI5BcBn0oIwfMnKI3mgt-HoYo9PmLCeSiUE--E2y8ZhFmubFpOzX__51Mxbt8H4Y_gknk31aUUoh3uOsf_pSUBIQKcVv9"/>
+<div>
+<h2 class="text-base font-semibold text-slate-900 leading-tight">Priya Sharma</h2>
+<p class="text-[13px] text-slate-500 font-normal">priya@example.com</p>
+</div>
+</div>
+<!-- Chevron Right -->
+<svg class="w-4 h-4 text-slate-400 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</a>
+</section>
+<!-- END: UserProfileCard -->
+<!-- BEGIN: SettingsOptionsList -->
+<section class="py-2 space-y-1" data-purpose="settings-menu-list">
+<!-- Item 1: Personal Information -->
+<a class="flex items-center justify-between py-3.5 px-2 rounded-xl hover:bg-slate-50 transition-colors tap-effect" href="#personal-info">
+<div class="flex items-center space-x-3.5">
+<div class="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+<!-- User Icon -->
+<svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div>
+<p class="text-[14.5px] font-semibold text-slate-900 leading-snug">Personal Information</p>
+<p class="text-[12px] text-slate-400 font-normal">Manage your profile details</p>
+</div>
+</div>
+<svg class="w-4 h-4 text-slate-300 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</a>
+<!-- Item 2: Privacy & Security -->
+<a class="flex items-center justify-between py-3.5 px-2 rounded-xl hover:bg-slate-50 transition-colors tap-effect" href="#privacy-security">
+<div class="flex items-center space-x-3.5">
+<div class="w-9 h-9 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+<!-- Shield / Lock Icon -->
+<svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div>
+<p class="text-[14.5px] font-semibold text-slate-900 leading-snug">Privacy &amp; Security</p>
+<p class="text-[12px] text-slate-400 font-normal">Control your data and permissions</p>
+</div>
+</div>
+<svg class="w-4 h-4 text-slate-300 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</a>
+<!-- Item 3: Consent Settings -->
+<a class="flex items-center justify-between py-3.5 px-2 rounded-xl hover:bg-slate-50 transition-colors tap-effect" href="#consent-settings">
+<div class="flex items-center space-x-3.5">
+<div class="w-9 h-9 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center shrink-0">
+<!-- Document / Consent Icon -->
+<svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div>
+<p class="text-[14.5px] font-semibold text-slate-900 leading-snug">Consent Settings</p>
+<p class="text-[12px] text-slate-400 font-normal">Manage data usage consent</p>
+</div>
+</div>
+<svg class="w-4 h-4 text-slate-300 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</a>
+<!-- Item 4: Notifications -->
+<a class="flex items-center justify-between py-3.5 px-2 rounded-xl hover:bg-slate-50 transition-colors tap-effect" href="#notifications">
+<div class="flex items-center space-x-3.5">
+<div class="w-9 h-9 rounded-full bg-cyan-50 text-cyan-600 flex items-center justify-center shrink-0">
+<!-- Bell Icon -->
+<svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div>
+<p class="text-[14.5px] font-semibold text-slate-900 leading-snug">Notifications</p>
+<p class="text-[12px] text-slate-400 font-normal">Get updates about your health</p>
+</div>
+</div>
+<svg class="w-4 h-4 text-slate-300 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</a>
+<!-- Item 5: Data Management -->
+<a class="flex items-center justify-between py-3.5 px-2 rounded-xl hover:bg-slate-50 transition-colors tap-effect" href="#data-management">
+<div class="flex items-center space-x-3.5">
+<div class="w-9 h-9 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center shrink-0">
+<!-- Data / Export Icon -->
+<svg class="w-5 h-5 stroke-[1.8]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div>
+<p class="text-[14.5px] font-semibold text-slate-900 leading-snug">Data Management</p>
+<p class="text-[12px] text-slate-400 font-normal">Export or delete your data</p>
+</div>
+</div>
+<svg class="w-4 h-4 text-slate-300 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</a>
+</section>
+<!-- END: SettingsOptionsList -->
+<!-- BEGIN: SignOutAction -->
+<section class="pt-4" data-purpose="sign-out-container">
+<button class="w-full flex items-center space-x-3 px-2 py-3 text-red-500 hover:bg-red-50/60 rounded-xl transition-colors font-medium text-[14.5px] tap-effect" type="button">
+<!-- Sign Out Icon -->
+<svg class="w-5 h-5 stroke-[2] text-red-500" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Sign Out</span>
+</button>
+</section>
+<!-- END: SignOutAction -->
+</main>
+<!-- END: MainScrollableContent -->
+<!-- BEGIN: BottomNavigation -->
+<nav class="w-full bg-white border-t border-slate-100 px-6 pt-2 pb-6 flex justify-between items-center z-20 shrink-0" data-purpose="mobile-bottom-navigation">
+<!-- Home Tab -->
+<a class="flex flex-col items-center group py-1 text-slate-400 hover:text-slate-600 transition-colors" href="#home">
+<svg class="w-5 h-5 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] mt-1 font-medium">Home</span>
+</a>
+<!-- Reports Tab -->
+<a class="flex flex-col items-center group py-1 text-slate-400 hover:text-slate-600 transition-colors" href="#reports">
+<svg class="w-5 h-5 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] mt-1 font-medium">Reports</span>
+</a>
+<!-- Central Add / Action Button -->
+<div class="relative -top-2">
+<button aria-label="Upload report or ask AI" class="w-11 h-11 bg-teal-600 text-white rounded-full flex items-center justify-center shadow-lg shadow-teal-600/30 hover:bg-teal-700 active:scale-95 transition-transform focus:outline-none" type="button">
+<svg class="w-6 h-6 stroke-[2.5]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+<!-- Timeline Tab -->
+<a class="flex flex-col items-center group py-1 text-slate-400 hover:text-slate-600 transition-colors" href="#timeline">
+<svg class="w-5 h-5 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] mt-1 font-medium">Timeline</span>
+</a>
+<!-- Profile Tab (Active) -->
+<a class="flex flex-col items-center group py-1 text-teal-600" href="#profile">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 20 20">
+<path clip-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" fill-rule="evenodd"></path>
+</svg>
+<span class="text-[10px] mt-1 font-semibold text-teal-600">Profile</span>
+</a>
+</nav>
+<!-- END: BottomNavigation -->
+<!-- BEGIN: iOSHomeIndicator -->
+<div class="w-full flex justify-center pb-1.5 bg-white shrink-0">
+<div class="w-32 h-1 bg-slate-900/30 rounded-full"></div>
+</div>
+<!-- END: iOSHomeIndicator -->
+</div>
+<!-- END: MobileDeviceFrame -->
+</body></html>

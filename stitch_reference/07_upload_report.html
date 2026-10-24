@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Upload Medical Report - Processing</title>
+<!-- Tailwind CSS CDN with forms and container queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              teal: '#009488',
+              tealDark: '#0e7490',
+              tealLight: '#e6f7f6',
+              blue: '#0284c7',
+              navy: '#0f172a',
+            }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Text"', '"SF Pro Display"', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom iOS & Animation Styles -->
+<style data-purpose="app-layout">
+    body {
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    /* Hide default scrollbar for seamless mobile screen feel */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+<style data-purpose="animations">
+    @keyframes spin-slow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .animate-spin-custom {
+      animation: spin-slow 1.2s linear infinite;
+    }
+  </style>
+<!-- END: Custom iOS & Animation Styles -->
+</head>
+<body class="bg-slate-100 flex justify-center items-center min-h-screen p-0 sm:p-4 text-slate-800 font-sans">
+<!-- BEGIN: Phone Frame / Container -->
+<div class="w-full max-w-[393px] h-[852px] bg-[#f8fafc] flex flex-col justify-between shadow-2xl relative overflow-hidden sm:rounded-[44px] sm:border-[8px] sm:border-slate-800">
+<!-- BEGIN: iOS Status Bar Area -->
+<header class="w-full pt-3 px-7 flex justify-between items-center text-xs font-semibold text-slate-900 z-20 shrink-0 select-none">
+<span class="tracking-tight text-sm">9:41</span>
+<!-- Dynamic Island / Notch Placeholder -->
+<div class="w-28 h-4 bg-black rounded-full absolute left-1/2 -translate-x-1/2 top-2.5 hidden sm:block"></div>
+<div class="flex items-center space-x-1.5">
+<!-- Signal bars icon -->
+<svg class="w-3.5 h-3.5 fill-current" viewbox="0 0 24 24">
+<path d="M2 17h3v4H2v-4zm5-4h3v8H7v-8zm5-4h3v12h-3V9zm5-4h3v16h-3V5z"></path>
+</svg>
+<!-- Wifi icon -->
+<svg class="w-3.5 h-3.5 fill-current" viewbox="0 0 24 24">
+<path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98C20.93 5.9 16.69 4 12 4zm0 3.5c3.8 0 7.23 1.54 9.75 4.02L12 19.34 2.25 11.52C4.77 9.04 8.2 7.5 12 7.5z"></path>
+</svg>
+<!-- Battery icon -->
+<div class="w-5 h-2.5 border border-slate-900 rounded-sm p-0.5 flex items-center">
+<div class="w-full h-full bg-slate-900 rounded-[1px]"></div>
+</div>
+</div>
+</header>
+<!-- END: iOS Status Bar Area -->
+<!-- BEGIN: Top Navigation Bar -->
+<nav class="px-5 pt-3 pb-2 flex items-center justify-between z-10 shrink-0" data-purpose="top-navigation">
+<div class="flex items-center space-x-3">
+<!-- Back Arrow Button -->
+<button aria-label="Go back" class="p-1.5 text-slate-700 hover:text-slate-900 transition-colors" type="button">
+<svg class="w-5 h-5 stroke-[2.2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15.75 19.5L8.25 12l7.5-7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<h1 class="text-base font-semibold text-slate-900">Upload Report</h1>
+</div>
+<div class="flex items-center space-x-3">
+<!-- Notification Bell -->
+<button aria-label="Notifications" class="p-1 text-slate-600 hover:text-slate-900 relative" type="button">
+<svg class="w-5 h-5 fill-none stroke-current stroke-[2]" viewbox="0 0 24 24">
+<path d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- User Avatar -->
+<div class="w-7 h-7 rounded-full bg-slate-200 border border-slate-300 overflow-hidden flex items-center justify-center">
+<img alt="User avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKtSspEHzfrjB77UzIidg-vWfVnybeLbwFo4FJLN2DC8e-CvexCbwhOD2t2OFBLDM68mjYYq9kgfTgKm-rPijixXDbkGFUbt9ZhqqCejAGSI_uf4fbu3vFTwZM8hubMyRk5AFcrqRc9YfZZigc99aQA33poV4mr2jA3ikOv3sIdRr8oHxM_ncIVWJRf74UuQ3C_ohReTFPA9tnanDz6RDa4iAaPbabEVTNTYvOO5Oe0fglxX9CDomw"/>
+</div>
+</div>
+</nav>
+<!-- END: Top Navigation Bar -->
+<!-- BEGIN: Main Content Area -->
+<main class="flex-1 overflow-y-auto px-5 pt-2 pb-4 space-y-4" data-purpose="processing-content">
+<!-- Screen Header Description -->
+<section class="space-y-1">
+<h2 class="text-xl font-bold tracking-tight text-slate-900">Upload Medical Report</h2>
+<p class="text-xs text-slate-500 leading-relaxed">
+          Upload your lab report pdf or photo to get instant AI analysis.
+        </p>
+</section>
+<!-- Stepper Status Container -->
+<section class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 divide-y divide-slate-100" data-purpose="progress-stepper">
+<!-- Step 1: Validating file format (Completed) -->
+<div class="py-2.5 first:pt-0 flex items-center justify-between">
+<div class="flex items-center space-x-3">
+<!-- Completed Icon -->
+<div class="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center text-white shrink-0">
+<svg class="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M4.5 12.75l6 6 9-13.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div>
+<p class="text-[13px] font-semibold text-slate-800 leading-snug">Validating file format</p>
+<p class="text-[11px] text-emerald-600 font-medium">Completed</p>
+</div>
+</div>
+<div class="text-slate-400">
+<svg class="w-4 h-4 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M8.25 4.5l7.5 7.5-7.5 7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+<!-- Step 2: Extracting text (In progress) -->
+<div class="py-2.5 flex items-center justify-between">
+<div class="flex items-center space-x-3">
+<!-- Loading Spinner Icon -->
+<div class="w-6 h-6 rounded-full border-2 border-slate-100 border-t-[#009488] animate-spin-custom shrink-0"></div>
+<div>
+<p class="text-[13px] font-semibold text-slate-800 leading-snug">Extracting text</p>
+<p class="text-[11px] text-[#009488] font-medium flex items-center space-x-1">
+<span>In progress...</span>
+</p>
+</div>
+</div>
+<div class="text-slate-400">
+<svg class="w-4 h-4 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M8.25 4.5l7.5 7.5-7.5 7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+<!-- Step 3: Extracting results (Waiting) -->
+<div class="py-2.5 flex items-center justify-between opacity-60">
+<div class="flex items-center space-x-3">
+<!-- Inactive Circle Icon -->
+<div class="w-6 h-6 rounded-full border-2 border-slate-300 shrink-0"></div>
+<div>
+<p class="text-[13px] font-medium text-slate-700 leading-snug">Extracting results</p>
+<p class="text-[11px] text-slate-400">Waiting...</p>
+</div>
+</div>
+<div class="text-slate-300">
+<svg class="w-4 h-4 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M8.25 4.5l7.5 7.5-7.5 7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+<!-- Step 4: Verifying data (Waiting) -->
+<div class="py-2.5 flex items-center justify-between opacity-60">
+<div class="flex items-center space-x-3">
+<!-- Inactive Circle Icon -->
+<div class="w-6 h-6 rounded-full border-2 border-slate-300 shrink-0"></div>
+<div>
+<p class="text-[13px] font-medium text-slate-700 leading-snug">Verifying data</p>
+<p class="text-[11px] text-slate-400">Waiting...</p>
+</div>
+</div>
+<div class="text-slate-300">
+<svg class="w-4 h-4 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M8.25 4.5l7.5 7.5-7.5 7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+<!-- Step 5: Ready for review (Waiting) -->
+<div class="py-2.5 last:pb-0 flex items-center justify-between opacity-60">
+<div class="flex items-center space-x-3">
+<!-- Inactive Circle Icon -->
+<div class="w-6 h-6 rounded-full border-2 border-slate-300 shrink-0"></div>
+<div>
+<p class="text-[13px] font-medium text-slate-700 leading-snug">Ready for review</p>
+<p class="text-[11px] text-slate-400">Waiting...</p>
+</div>
+</div>
+<div class="text-slate-300">
+<svg class="w-4 h-4 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M8.25 4.5l7.5 7.5-7.5 7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+</section>
+<!-- Info/Notification Card -->
+<div class="bg-cyan-50/60 border border-cyan-100 rounded-xl p-3 flex items-start space-x-2.5">
+<svg class="w-4 h-4 text-cyan-600 mt-0.5 shrink-0" fill="currentColor" viewbox="0 0 20 20">
+<path clip-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" fill-rule="evenodd"></path>
+</svg>
+<p class="text-[11.5px] text-cyan-900 leading-tight">
+          This may take a few moments.<br/>You'll be notified when it's ready.
+        </p>
+</div>
+<!-- BEGIN: Audio Answer Bar -->
+<div class="bg-white border border-slate-200/80 rounded-2xl p-3 shadow-xs flex items-center justify-between" data-purpose="audio-player">
+<div class="flex items-center space-x-2.5 flex-1 pr-2">
+<!-- Play / Speaker Icon Button -->
+<button class="w-8 h-8 rounded-full bg-teal-50 text-[#009488] flex items-center justify-center shrink-0" type="button">
+<svg class="w-4 h-4 fill-current ml-0.5" viewbox="0 0 24 24">
+<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"></path>
+</svg>
+</button>
+<div class="flex-1">
+<span class="text-xs font-semibold text-slate-800">Listen to answer</span>
+<!-- Simulated Sound Waves -->
+<div class="flex items-center space-x-1 mt-1">
+<div class="h-2 w-1 bg-[#009488] rounded-full"></div>
+<div class="h-3.5 w-1 bg-[#009488] rounded-full"></div>
+<div class="h-5 w-1 bg-[#009488] rounded-full"></div>
+<div class="h-2.5 w-1 bg-[#009488] rounded-full"></div>
+<div class="h-4 w-1 bg-[#009488] rounded-full"></div>
+<div class="h-2 w-1 bg-slate-200 rounded-full"></div>
+<div class="h-3 w-1 bg-slate-200 rounded-full"></div>
+<div class="h-1.5 w-1 bg-slate-200 rounded-full"></div>
+</div>
+</div>
+</div>
+<span class="text-xs font-medium text-slate-400 tabular-nums">0:45</span>
+</div>
+<!-- END: Audio Answer Bar -->
+</main>
+<!-- END: Main Content Area -->
+<!-- BEGIN: Floating / Bottom Input Section -->
+<div class="px-5 pb-2 bg-gradient-to-t from-[#f8fafc] via-[#f8fafc] to-transparent">
+<!-- Input bar container -->
+<div class="relative flex items-center">
+<input class="w-full pl-4 pr-11 py-2.5 bg-white border border-slate-200 rounded-full text-xs placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-[#009488] shadow-sm" placeholder="Type your question..." type="text"/>
+<!-- Voice / Send Button inside bar -->
+<button aria-label="Voice input or send" class="absolute right-1.5 w-7 h-7 rounded-full bg-[#009488] flex items-center justify-center text-white shadow-sm" type="button">
+<svg class="w-3.5 h-3.5 fill-current" viewbox="0 0 24 24">
+<path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"></path>
+<path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- END: Floating / Bottom Input Section -->
+<!-- BEGIN: Bottom Navigation Bar -->
+<footer class="bg-white border-t border-slate-100 px-6 py-2 pb-5 flex items-center justify-between shrink-0" data-purpose="bottom-tab-bar">
+<!-- Home Tab -->
+<a class="flex flex-col items-center space-y-1 text-slate-400 hover:text-[#009488]" href="#">
+<svg class="w-5 h-5 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium">Home</span>
+</a>
+<!-- Reports Tab (Active/Contextual) -->
+<a class="flex flex-col items-center space-y-1 text-[#009488]" href="#">
+<svg class="w-5 h-5 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium">Reports</span>
+</a>
+<!-- Center Action Button (+) -->
+<div class="-mt-5 flex items-center justify-center">
+<button aria-label="Upload New" class="w-11 h-11 rounded-full bg-[#009488] text-white flex items-center justify-center shadow-md shadow-teal-500/30 hover:bg-[#0e7490] transition-colors" type="button">
+<svg class="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+<!-- Timeline Tab -->
+<a class="flex flex-col items-center space-y-1 text-slate-400 hover:text-[#009488]" href="#">
+<svg class="w-5 h-5 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium">Timeline</span>
+</a>
+<!-- Profile Tab -->
+<a class="flex flex-col items-center space-y-1 text-slate-400 hover:text-[#009488]" href="#">
+<svg class="w-5 h-5 stroke-[2]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[10px] font-medium">Profile</span>
+</a>
+</footer>
+<!-- END: Bottom Navigation Bar -->
+<!-- iOS Home Indicator -->
+<div class="w-32 h-1 bg-slate-300 rounded-full mx-auto mb-1.5 shrink-0"></div>
+</div>
+<!-- END: Phone Frame / Container -->
+</body></html>

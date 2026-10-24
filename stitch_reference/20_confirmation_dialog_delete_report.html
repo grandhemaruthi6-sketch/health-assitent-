@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>HealthCopilot AI - Confirmation Dialog</title>
+<!-- Load Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration for HealthCopilot Brand Colors -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              primary: '#0D9488',
+              secondary: '#0284C7',
+              accent: '#059669',
+              dark: '#1E293B',
+              danger: '#EF4444',
+              'danger-hover': '#DC2626',
+              'danger-light': '#FEE2E2',
+              'danger-bg': '#FEF2F2'
+            }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Text"', '"SF Pro Display"', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+          },
+          boxShadow: {
+            'modal': '0 20px 40px -15px rgba(15, 23, 42, 0.12), 0 0 1px 1px rgba(15, 23, 42, 0.05)',
+            'phone': '0 25px 60px -15px rgba(0, 0, 0, 0.2)'
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Device & Modal Styles -->
+<style data-purpose="device-frame">
+    /* iOS simulated background and container layout */
+    body {
+      background-color: #E2E8F0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Standard mobile iOS aspect wrapper */
+    .ios-device-container {
+      width: 100%;
+      max-width: 375px;
+      height: 740px;
+      border-radius: 44px;
+      overflow: hidden;
+      position: relative;
+      background-color: #F8FAFC;
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
+<style data-purpose="status-bar-styling">
+    .ios-status-bar {
+      height: 44px;
+      padding-top: 6px;
+      padding-left: 28px;
+      padding-right: 28px;
+    }
+  </style>
+<!-- END: Custom Device & Modal Styles -->
+</head>
+<body class="bg-slate-200">
+<!-- BEGIN: Device Frame -->
+<div class="ios-device-container shadow-phone border border-slate-300 relative select-none" data-purpose="mobile-ios-container">
+<!-- BEGIN: iOS Status Bar -->
+<header class="ios-status-bar w-full flex justify-between items-center text-slate-800 z-10" data-purpose="status-bar">
+<!-- Current Time -->
+<span class="text-xs font-semibold tracking-tight">9:41</span>
+<!-- iPhone Right Status Icons (Signal, Wifi, Battery) -->
+<div class="flex items-center space-x-1.5" data-purpose="status-indicators">
+<!-- Cellular Signal -->
+<svg class="w-3.5 h-3.5 fill-current" viewbox="0 0 24 24">
+<path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 18.23C2.88 16.39 2 14.3 2 12 2 6.48 6.48 2 12 2s10 4.48 10 10c0 2.3-.88 4.39-2.35 6.23l-.62-.62C20.26 16.07 21 14.12 21 12c0-4.97-4.03-9-9-9zm0 4c-2.76 0-5 2.24-5 5 0 1.25.46 2.39 1.22 3.28l.71-.71C8.36 13.93 8 13.01 8 12c0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.01-.36 1.93-.93 2.57l.71.71C16.54 14.39 17 13.25 17 12c0-2.76-2.24-5-5-5zm0 4c-.55 0-1 .45-1 1 0 .28.11.53.29.71l.71-.71V12z"></path>
+<path d="M1.5 8.5C4.3 5.7 8 4 12 4s7.7 1.7 10.5 4.5L12 19.5 1.5 8.5z"></path>
+</svg>
+<!-- Wi-Fi -->
+<svg class="w-3.5 h-3.5 fill-current" viewbox="0 0 24 24">
+<path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98A17.92 17.92 0 0 0 12 4z"></path>
+</svg>
+<!-- Battery Level -->
+<div class="w-5 h-2.5 border border-slate-700 rounded-sm p-0.5 flex items-center">
+<div class="h-full w-3 bg-slate-800 rounded-2xs"></div>
+</div>
+</div>
+</header>
+<!-- END: iOS Status Bar -->
+<!-- BEGIN: Underlay Background Screen (Simulating the App Context) -->
+<main class="flex-1 w-full px-5 pt-3 pb-8 flex flex-col justify-between opacity-40 blur-[1px] pointer-events-none" data-purpose="background-context">
+<!-- App Header Area -->
+<div class="flex items-center justify-between">
+<div class="w-8 h-8 rounded-full bg-slate-200"></div>
+<div class="h-4 w-28 bg-slate-200 rounded"></div>
+<div class="w-8 h-8 rounded-full bg-slate-200"></div>
+</div>
+<!-- Report Details Card Placeholder -->
+<div class="w-full bg-white rounded-2xl p-4 shadow-sm space-y-3 mt-4 border border-slate-100">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
+<span class="text-red-500 font-bold text-xs">PDF</span>
+</div>
+<div class="space-y-1 flex-1">
+<div class="h-3.5 w-3/4 bg-slate-200 rounded"></div>
+<div class="h-2.5 w-1/2 bg-slate-100 rounded"></div>
+</div>
+</div>
+<div class="h-10 bg-slate-50 rounded-xl"></div>
+</div>
+<!-- Additional content blocks -->
+<div class="space-y-2 mt-2">
+<div class="h-14 bg-white rounded-xl border border-slate-100"></div>
+<div class="h-14 bg-white rounded-xl border border-slate-100"></div>
+<div class="h-14 bg-white rounded-xl border border-slate-100"></div>
+</div>
+<!-- Bottom Tab Bar Placeholder -->
+<div class="h-12 w-full bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-around px-4 mt-auto">
+<div class="w-5 h-5 bg-slate-200 rounded-full"></div>
+<div class="w-5 h-5 bg-slate-200 rounded-full"></div>
+<div class="w-5 h-5 bg-slate-200 rounded-full"></div>
+<div class="w-5 h-5 bg-slate-200 rounded-full"></div>
+</div>
+</main>
+<!-- END: Underlay Background Screen -->
+<!-- BEGIN: Modal Backdrop -->
+<div class="absolute inset-0 bg-slate-900/35 backdrop-blur-sm flex items-center justify-center p-6 z-20" data-purpose="dialog-backdrop">
+<!-- BEGIN: Confirmation Dialog Card -->
+<section aria-describedby="dialog-desc" aria-labelledby="dialog-title" aria-modal="true" class="w-full max-w-[285px] bg-white rounded-3xl p-6 shadow-modal border border-slate-100/80 flex flex-col items-center text-center transition-transform transform duration-150" data-purpose="confirmation-dialog" role="dialog">
+<!-- Icon Container -->
+<!-- Light Coral / Red Tinted Rounded Square with Trash Bin Icon -->
+<div class="w-16 h-16 rounded-2xl bg-red-50 flex items-center justify-center mb-5 text-red-500 transition-colors" data-purpose="dialog-icon-wrapper">
+<!-- Modern Outline Trash Bin Icon -->
+<svg aria-hidden="true" class="w-8 h-8 stroke-red-500 fill-none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24">
+<!-- Trash can lid / handle -->
+<path d="M3 6h18"></path>
+<path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+<!-- Trash can container body -->
+<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+<!-- Interior trash can slats -->
+<line x1="10" x2="10" y1="11" y2="17"></line>
+<line x1="14" x2="14" y1="11" y2="17"></line>
+</svg>
+</div>
+<!-- Typography: Title & Subtitle -->
+<!-- Heading: 'Delete this report?' -->
+<h2 class="text-lg font-bold text-slate-900 tracking-tight mb-1.5" data-purpose="dialog-headline" id="dialog-title">
+          Delete this report?
+        </h2>
+<!-- Subtitle: 'This action cannot be undone.' -->
+<p class="text-xs text-slate-400 font-normal leading-relaxed mb-6 px-1" data-purpose="dialog-subtitle" id="dialog-desc">
+          This action cannot be undone.
+        </p>
+<!-- BEGIN: Action Buttons Row -->
+<div class="grid grid-cols-2 gap-3 w-full" data-purpose="dialog-actions">
+<!-- Cancel Button -->
+<button class="w-full py-2.5 px-4 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-full hover:bg-slate-50 active:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-300" data-purpose="cancel-button" onclick="handleCancel()" type="button">
+            Cancel
+          </button>
+<!-- Delete Button (Solid Red / Coral Pill) -->
+<button class="w-full py-2.5 px-4 text-xs font-semibold text-white bg-red-500 rounded-full hover:bg-red-600 active:bg-red-700 shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-1" data-purpose="delete-button" onclick="handleDelete()" type="button">
+            Delete
+          </button>
+</div>
+<!-- END: Action Buttons Row -->
+</section>
+<!-- END: Confirmation Dialog Card -->
+</div>
+<!-- END: Modal Backdrop -->
+<!-- BEGIN: iOS Home Indicator -->
+<div class="absolute bottom-2 inset-x-0 flex justify-center pointer-events-none z-30" data-purpose="home-indicator">
+<div class="w-32 h-1 bg-slate-300 rounded-full"></div>
+</div>
+<!-- END: iOS Home Indicator -->
+</div>
+<!-- END: Device Frame -->
+<!-- BEGIN: Interactive Feedback Script -->
+<script data-purpose="dialog-interaction">
+    // Minimal interaction script to provide subtle tactile response
+    function handleCancel() {
+      const dialog = document.querySelector('[data-purpose="confirmation-dialog"]');
+      if (dialog) {
+        dialog.classList.add('scale-95', 'opacity-80');
+        setTimeout(() => {
+          dialog.classList.remove('scale-95', 'opacity-80');
+        }, 150);
+      }
+    }
+
+    function handleDelete() {
+      const deleteBtn = document.querySelector('[data-purpose="delete-button"]');
+      if (deleteBtn) {
+        deleteBtn.textContent = 'Deleting...';
+        deleteBtn.classList.add('opacity-90');
+        setTimeout(() => {
+          deleteBtn.textContent = 'Deleted';
+        }, 600);
+      }
+    }
+  </script>
+<!-- END: Interactive Feedback Script -->
+</body></html>

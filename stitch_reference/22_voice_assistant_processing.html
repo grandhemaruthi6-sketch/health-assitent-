@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HealthCopilot AI - Voice Assistant Processing</title>
+<!-- Load Tailwind CSS v3 with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              primary: '#009488',
+              secondary: '#0284C7',
+              accent: '#06B6D4',
+              softCyan: '#E0F7FA',
+              lightBg: '#F0FDFA',
+              cardBg: '#FFFFFF',
+              darkText: '#0F172A',
+              mutedText: '#64748B'
+            }
+          },
+          animation: {
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'ripple': 'ripple 2.5s cubic-bezier(0, 0.2, 0.8, 1) infinite',
+            'blink': 'blink 4s infinite'
+          },
+          keyframes: {
+            ripple: {
+              '0%': { transform: 'scale(0.85)', opacity: '0.8' },
+              '100%': { transform: 'scale(1.45)', opacity: '0' }
+            },
+            blink: {
+              '0%, 90%, 100%': { transform: 'scaleY(1)' },
+              '95%': { transform: 'scaleY(0.1)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Animation Styles -->
+<style data-purpose="custom-animations">
+    .avatar-halo-1 {
+      animation: ripple 3s ease-out infinite;
+    }
+    .avatar-halo-2 {
+      animation: ripple 3s ease-out infinite 1s;
+    }
+    .avatar-eyes {
+      transform-origin: center;
+      animation: blink 4.5s infinite;
+    }
+  </style>
+<!-- END: Custom Animation Styles -->
+</head>
+<body class="bg-[#F8FAFC] min-h-screen flex flex-col items-center justify-center p-4 antialiased text-slate-800 font-sans selection:bg-cyan-100 selection:text-cyan-900">
+<!-- BEGIN: Card Container -->
+<main class="w-full max-w-sm flex flex-col items-center">
+<!-- Component Label / Identifier from Snapshot -->
+<div class="mb-3 text-xs font-semibold tracking-wide text-slate-400 uppercase">
+      Voice Assistant (Processing)
+    </div>
+<!-- Main Card Body -->
+<section class="w-full bg-white rounded-3xl border border-sky-100/80 shadow-[0_12px_36px_-6px_rgba(2,132,199,0.08)] px-8 py-10 flex flex-col items-center justify-center relative overflow-hidden text-center" data-purpose="voice-assistant-processing-card" style="min-height: 290px;">
+<!-- Background Ambient Glow -->
+<div aria-hidden="true" class="absolute -top-12 -left-12 w-48 h-48 bg-gradient-to-br from-cyan-100/40 via-sky-50/20 to-transparent rounded-full blur-2xl pointer-events-none"></div>
+<div aria-hidden="true" class="absolute -bottom-10 -right-10 w-44 h-44 bg-gradient-to-tl from-teal-50/50 via-sky-50/30 to-transparent rounded-full blur-2xl pointer-events-none"></div>
+<!-- BEGIN: Glowing Robot Avatar Section -->
+<div class="relative flex items-center justify-center mb-6" data-purpose="avatar-container">
+<!-- Outer Rippling Halo 1 -->
+<div aria-hidden="true" class="avatar-halo-1 absolute w-24 h-24 rounded-full bg-cyan-200/40 pointer-events-none"></div>
+<!-- Outer Rippling Halo 2 -->
+<div aria-hidden="true" class="avatar-halo-2 absolute w-28 h-28 rounded-full bg-sky-100/60 pointer-events-none"></div>
+<!-- Inner Soft Ambient Ring -->
+<div aria-hidden="true" class="absolute w-20 h-20 rounded-full bg-cyan-50 border border-cyan-100"></div>
+<!-- Friendly Robot Sphere Icon -->
+<div class="relative w-16 h-16 rounded-full bg-gradient-to-b from-[#38BDF8] via-[#0284C7] to-[#0369A1] shadow-lg shadow-sky-500/30 flex items-center justify-center overflow-hidden z-10" data-purpose="robot-avatar">
+<!-- Specular Highlight (Light reflection on head) -->
+<div aria-hidden="true" class="absolute top-1 inset-x-2 h-4 rounded-full bg-white/30 blur-[1px]"></div>
+<!-- Robot Visor Screen -->
+<div class="relative w-11 h-7 bg-slate-900/90 rounded-full flex items-center justify-center gap-2 px-2 shadow-inner">
+<!-- Left Cyan Glowing Eye -->
+<div class="avatar-eyes w-2 h-2 rounded-full bg-[#38BDF8] shadow-[0_0_8px_#38BDF8]"></div>
+<!-- Right Cyan Glowing Eye -->
+<div class="avatar-eyes w-2 h-2 rounded-full bg-[#38BDF8] shadow-[0_0_8px_#38BDF8]"></div>
+</div>
+<!-- Bottom Soft Rim Glow -->
+<div aria-hidden="true" class="absolute bottom-0 inset-x-0 h-2 bg-gradient-to-t from-teal-300/40 to-transparent"></div>
+</div>
+</div>
+<!-- END: Glowing Robot Avatar Section -->
+<!-- BEGIN: Status Text Content -->
+<div class="relative z-10 space-y-1.5 max-w-[220px]" data-purpose="status-typography">
+<!-- Headline -->
+<h2 class="text-[17px] font-semibold text-slate-800 tracking-tight flex items-center justify-center gap-0.5">
+<span>Processing</span>
+<span class="inline-flex animate-pulse">...</span>
+</h2>
+<!-- Explanatory Subtitle -->
+<p class="text-xs text-slate-500 font-normal leading-relaxed">
+          Finding the best answer<br/>for you.
+        </p>
+</div>
+<!-- END: Status Text Content -->
+<!-- Subtle Sound Waves Decorative Indicator -->
+<div aria-hidden="true" class="mt-5 flex items-center justify-center gap-1 opacity-70" data-purpose="audio-wave-bars">
+<span class="w-0.5 h-1.5 bg-cyan-400 rounded-full animate-[pulse_1s_ease-in-out_infinite]"></span>
+<span class="w-0.5 h-3 bg-sky-400 rounded-full animate-[pulse_1.2s_ease-in-out_infinite_0.2s]"></span>
+<span class="w-0.5 h-4 bg-teal-400 rounded-full animate-[pulse_0.9s_ease-in-out_infinite_0.4s]"></span>
+<span class="w-0.5 h-3 bg-sky-400 rounded-full animate-[pulse_1.2s_ease-in-out_infinite_0.2s]"></span>
+<span class="w-0.5 h-1.5 bg-cyan-400 rounded-full animate-[pulse_1s_ease-in-out_infinite]"></span>
+</div>
+</section>
+</main>
+<!-- END: Card Container -->
+</body></html>

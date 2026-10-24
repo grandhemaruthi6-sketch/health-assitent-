@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HealthCopilot AI - Retry State</title>
+<!-- Load Tailwind CSS v3 with forms and container-queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration for HealthCopilot Theme -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              teal: '#009488',
+              tealHover: '#007b71',
+              lightBlueBg: '#F0F9FA',
+              iconBlue: '#38BDF8',
+              subtleGray: '#64748B',
+              darkNavy: '#0F172A',
+              cardBg: '#FFFFFF',
+              screenBg: '#EBF4F6'
+            }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+          },
+          borderRadius: {
+            'card': '20px',
+            'phone': '40px'
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Layout Styles -->
+<style data-purpose="status-bar-typography">
+    .ios-status-time {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+    }
+  </style>
+<!-- END: Custom Layout Styles -->
+</head>
+<body class="bg-slate-100 flex items-center justify-center min-h-screen p-4 font-sans antialiased text-brand-darkNavy selection:bg-brand-teal selection:text-white">
+<!-- BEGIN: Mobile Device Frame Wrapper -->
+<main class="w-full max-w-[390px] h-[844px] bg-brand-screenBg rounded-phone shadow-2xl relative flex flex-col justify-between overflow-hidden border-[8px] border-white ring-1 ring-slate-200" data-purpose="mobile-frame">
+<!-- BEGIN: iOS Status Bar -->
+<header class="w-full px-7 pt-3.5 pb-2 flex items-center justify-between text-brand-darkNavy z-20" data-purpose="ios-status-bar">
+<!-- Time Indicator -->
+<span class="ios-status-time select-none">9:41</span>
+<!-- Right Status Icons (Signal, WiFi, Battery) -->
+<div aria-label="System status" class="flex items-center space-x-1.5">
+<!-- Cellular Signal Icon -->
+<svg class="w-4 h-4 fill-current" viewbox="0 0 24 24">
+<path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 18.23C2.88 16.48 2 14.34 2 12 2 6.48 6.48 2 12 2c5.52 0 10 4.48 10 10 0 2.34-.88 4.48-2.35 6.23l-.62-.62C20.26 16.07 21 14.12 21 12c0-4.97-4.03-9-9-9zm0 4c-2.76 0-5 2.24-5 5 0 1.25.46 2.39 1.22 3.28l.71-.71C8.36 13.91 8 13 8 12c0-2.21 1.79-4 4-4s4 1.79 4 4c0 1-.36 1.91-.93 2.57l.71.71c.76-.89 1.22-2.03 1.22-3.28 0-2.76-2.24-5-5-5zm0 4a1 1 0 100 2 1 1 0 000-2z" opacity="0"></path>
+<rect height="5" rx="0.5" width="3" x="2" y="16"></rect>
+<rect height="8" rx="0.5" width="3" x="7" y="13"></rect>
+<rect height="12" rx="0.5" width="3" x="12" y="9"></rect>
+<rect height="16" rx="0.5" width="3" x="17" y="5"></rect>
+</svg>
+<!-- WiFi Icon -->
+<svg class="w-4 h-4 fill-current" viewbox="0 0 24 24">
+<path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98C20.93 5.9 16.69 4 12 4zm0 3.32c3.78 0 7.21 1.49 9.77 3.93L12 19.06 2.23 11.25C4.79 8.81 8.22 7.32 12 7.32z"></path>
+</svg>
+<!-- iOS Battery Icon -->
+<div class="flex items-center">
+<div class="w-5 h-2.5 border border-current rounded-sm p-0.5 flex items-center">
+<div class="h-full w-3 bg-current rounded-2xs"></div>
+</div>
+<div class="w-0.5 h-1 bg-current rounded-r-xs ml-px"></div>
+</div>
+</div>
+</header>
+<!-- END: iOS Status Bar -->
+<!-- BEGIN: Screen Title Identifier -->
+<div class="px-6 pt-3 pb-1" data-purpose="screen-category">
+<span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Retry State</span>
+</div>
+<!-- END: Screen Title Identifier -->
+<!-- BEGIN: Main Center Card (Upload Failed Component) -->
+<section class="flex-1 flex flex-col justify-center px-6 -mt-8" data-purpose="card-wrapper">
+<article class="bg-white w-full rounded-card shadow-sm border border-slate-100 p-8 flex flex-col items-center text-center">
+<!-- Reload Icon Container -->
+<div class="w-16 h-16 rounded-full bg-sky-50 flex items-center justify-center mb-6" data-purpose="error-icon-container">
+<svg class="w-8 h-8 text-sky-500" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewbox="0 0 24 24">
+<!-- Smooth Reload/Refresh Arrow Path -->
+<path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.85.83 6.72 2.24L21 8"></path>
+<polyline points="21 3 21 8 16 8"></polyline>
+</svg>
+</div>
+<!-- Feedback Headline -->
+<h1 class="text-xl font-bold text-slate-900 mb-2.5 leading-snug">
+          Upload failed
+        </h1>
+<!-- Explanatory Subtitle -->
+<p class="text-xs sm:text-[13px] text-slate-500 leading-relaxed max-w-[220px] mb-8">
+          Please check your connection and try again.
+        </p>
+<!-- Action Retry Button -->
+<button class="w-full bg-brand-teal hover:bg-brand-tealHover active:scale-[0.98] transition-all duration-150 text-white font-medium text-sm py-3 px-6 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-teal focus:ring-offset-2" data-purpose="action-retry-button" type="button">
+          Retry
+        </button>
+</article>
+</section>
+<!-- END: Main Center Card -->
+<!-- BEGIN: iOS Bottom Home Indicator Area -->
+<footer class="w-full pb-3 flex justify-center items-center" data-purpose="ios-home-indicator">
+<div class="w-32 h-1 bg-slate-300 rounded-full"></div>
+</footer>
+<!-- END: iOS Bottom Home Indicator Area -->
+</main>
+<!-- END: Mobile Device Frame Wrapper -->
+</body></html>
