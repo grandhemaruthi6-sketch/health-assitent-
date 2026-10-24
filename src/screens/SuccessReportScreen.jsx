@@ -29,9 +29,9 @@ export const SuccessReportScreen = () => {
         <div className="w-full mt-5 bg-slate-50 border border-slate-100 rounded-2xl p-4 text-left space-y-2.5">
           <div className="flex items-center justify-between pb-2 border-b border-slate-200/60">
             <div>
-              <span className="text-[10px] text-slate-400 block">Registered Facility</span>
+              <span className="text-[10px] text-slate-400 block">Detected Facility</span>
               <span className="text-xs font-bold text-slate-800">
-                {extractedDraft?.hospitalName || "Apollo Multispeciality Hospital"}
+                {extractedDraft?.hospitalDetected ? extractedDraft.hospitalName : "Hospital not identified in document"}
               </span>
             </div>
             <span className="text-[10px] font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200">
@@ -50,8 +50,8 @@ export const SuccessReportScreen = () => {
           </div>
 
           <div className="pt-1 flex items-center justify-between text-[10px] text-slate-400">
-            <span>Visit Date: {extractedDraft?.date}</span>
-            <span className="text-emerald-600 font-semibold">✓ Verified with OCR</span>
+            <span>Report Date: {extractedDraft?.date || "Not detected"}</span>
+            <span className={extractedDraft?.reportDate && !extractedDraft?.isDateUncertain ? "text-emerald-600 font-semibold" : "text-amber-600 font-semibold"}>{extractedDraft?.reportDate && !extractedDraft?.isDateUncertain ? "✓ Extracted from document" : "Date needs confirmation"}</span>
           </div>
         </div>
       </div>
