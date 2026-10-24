@@ -4,7 +4,7 @@
  */
 
 const configuredApiBase = import.meta.env?.VITE_API_BASE_URL?.trim();
-const normalizedApiBase = configuredApiBase ? configuredApiBase.replace(/\\/+$/, '') : '';
+const normalizedApiBase = configuredApiBase ? configuredApiBase.replace(/\/+$/, '') : '';
 const API_BASE = normalizedApiBase
   ? (normalizedApiBase.endsWith('/api') ? normalizedApiBase : `${normalizedApiBase}/api`)
   : '/api';
