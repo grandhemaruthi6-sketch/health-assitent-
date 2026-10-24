@@ -1,4 +1,23 @@
-# Google Cloud Document AI Setup Guide — HealthCopilot AI
+# OCR Setup Guide — HealthCopilot AI
+
+## Option A: Local OCR without Google Cloud billing (recommended)
+
+For this deployment, set `OCR_PROVIDER=tesseract-local` on Render. The backend uses:
+
+- `pdf-parse` for PDFs with embedded text.
+- `pdf-parse` page rendering plus Tesseract.js for scanned/image-only PDF pages (up to 10 scanned pages per request).
+- Tesseract.js for JPEG, PNG, and WebP images.
+
+No Google Cloud project, Document AI processor, service account, or Google billing account is required for this provider. Tesseract.js may download its English language model the first time it starts, so the backend needs outbound network access during initialization. CPU-heavy scans can take longer than cloud OCR; use clear images and split unusually long PDFs.
+
+To enable it on Render, open the `health-assitent` service → Environment and set `OCR_PROVIDER=tesseract-local`, then save and deploy. Verify `GET /api/ocr/health` reports `provider: tesseract-local` and `status: READY`, then test with a real sample document.
+
+---
+
+## Option B: Google Cloud Document AI (paid cloud OCR)
+
+Use the rest of this guide only when you choose Google Document AI and have set up billing, a processor, and credentials.
+
 
 This guide details the exact steps required to configure and operate the Google Cloud Document AI OCR pipeline for the HealthCopilot AI backend.
 
