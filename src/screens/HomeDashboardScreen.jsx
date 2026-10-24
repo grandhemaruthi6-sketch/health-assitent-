@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useApp } from '../context/AppContext';
 import { Header } from '../components/common/Header';
 import { BottomNav } from '../components/common/BottomNav';
@@ -11,7 +11,6 @@ export const HomeDashboardScreen = () => {
     reports,
     navigateTo,
     viewReport,
-    askAI,
     setPermissionModal,
     setIsAddHospitalModalOpen,
     resetUploadFlow,
@@ -19,26 +18,9 @@ export const HomeDashboardScreen = () => {
     isLoadingBackend
   } = useApp();
 
-  const [questionInput, setQuestionInput] = useState('');
-
   const hour = new Date().getHours();
   const greetingTime = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
   const profileName = userProfile?.name?.trim() ? userProfile.name.split(' ')[0] : 'there';
-
-  const handleAskSubmit = (e) => {
-    e.preventDefault();
-    if (!questionInput.trim()) return;
-    askAI(questionInput);
-    setQuestionInput('');
-  };
-
-  const handleMicClick = () => {
-    if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-      setPermissionModal(true);
-      return;
-    }
-    navigateTo('voice_processing');
-  };
 
   const handleStartUpload = () => {
     resetUploadFlow();
@@ -80,90 +62,7 @@ export const HomeDashboardScreen = () => {
           </button>
         </section>
 
-        {/* BEGIN: Animated AI Doctor Assistant Card */}
-        <section
-          className="bg-gradient-to-br from-[#0F766E] via-[#00A896] to-[#0284C7] rounded-3xl p-4 text-white shadow-soft relative overflow-hidden"
-          data-purpose="animated-ai-doctor-card"
-        >
-          {/* Subtle Ambient Rings */}
-          <div className="absolute -right-8 -bottom-8 w-44 h-44 rounded-full bg-white/10 blur-xl pointer-events-none"></div>
-          <div className="absolute right-3 top-2 w-28 h-28 rounded-full bg-teal-300/15 blur-lg pointer-events-none"></div>
 
-          <div className="flex items-center justify-between relative z-10 mb-3">
-            <div className="space-y-1">
-              <span className="text-[10px] uppercase font-bold tracking-wider bg-white/20 backdrop-blur-xs px-2.5 py-0.5 rounded-full inline-block">
-                Clinical AI Companion
-              </span>
-              <h2 className="text-base font-bold text-white tracking-tight leading-snug">
-                Ask your AI health assistant
-              </h2>
-              <p className="text-[11px] text-teal-50 max-w-[200px] leading-tight">
-                Get plain-English explanations for all your lab results &amp; reports.
-              </p>
-            </div>
-
-            {/* Doctor Avatar with Pulse EKG Animation */}
-            <div className="relative shrink-0">
-              <div className="w-16 h-16 rounded-full bg-white/90 p-1 shadow-lg ring-4 ring-white/30 relative">
-                <img
-                  src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&auto=format&fit=crop&q=80"
-                  alt="AI Doctor"
-                  className="w-full h-full object-cover rounded-full"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = "https://ui-avatars.com/api/?name=Dr+AI&background=00A896&color=fff";
-                  }}
-                />
-                {/* Active Pulse Status Indicator */}
-                <span className="absolute bottom-0 right-0 w-4 h-4 bg-emerald-400 border-2 border-white rounded-full flex items-center justify-center">
-                  <span className="w-1.5 h-1.5 bg-white rounded-full animate-ping"></span>
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Interactive Voice / Text Input Box */}
-          <form
-            onSubmit={handleAskSubmit}
-            className="bg-white rounded-2xl shadow-md px-3.5 py-2 flex items-center justify-between relative z-10"
-          >
-            <input
-              type="text"
-              value={questionInput}
-              onChange={(e) => setQuestionInput(e.target.value)}
-              placeholder="Ask anything about your health records..."
-              className="w-full text-xs text-slate-800 bg-transparent placeholder-slate-400 border-none focus:ring-0 focus:outline-none p-0 pr-2"
-            />
-            <button
-              onClick={handleMicClick}
-              aria-label="Microphone"
-              type="button"
-              className="w-8 h-8 rounded-xl bg-brand-500 hover:bg-brand-600 active:scale-95 text-white flex items-center justify-center shrink-0 transition shadow-sm"
-            >
-              <svg className="w-4 h-4 fill-none stroke-currentColor stroke-2" viewBox="0 0 24 24">
-                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4m-4 0h8" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-          </form>
-
-          {/* Quick Prompt Pills */}
-          <div className="flex items-center space-x-1.5 overflow-x-auto no-scrollbar pt-2 relative z-10">
-            <button
-              onClick={() => askAI("Explain my latest report")}
-              className="shrink-0 bg-white/20 hover:bg-white/30 text-[11px] font-medium text-white px-2.5 py-1 rounded-full backdrop-blur-xs transition active:scale-95 border border-white/20"
-            >
-              Explain my latest report
-            </button>
-            <button
-              onClick={() => askAI("What do these results mean?")}
-              className="shrink-0 bg-white/20 hover:bg-white/30 text-[11px] font-medium text-white px-2.5 py-1 rounded-full backdrop-blur-xs transition active:scale-95 border border-white/20"
-            >
-              What do these results mean?
-            </button>
-          </div>
-        </section>
-        {/* END: Animated AI Doctor Assistant Card */}
 
         {/* BEGIN: Continuity Engine Discrepancy Card */}
         <section
