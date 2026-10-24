@@ -122,12 +122,25 @@ export const DocumentMetadataSchema = z.object({
   facilityName: z.string().nullable(),
   clinicianName: z.string().nullable(),
   documentDate: z.string().nullable(),
-  patientIdentifier: z.string().nullable(), // De-identified
+  reportDate: z.string().nullable().optional(),
+  visitDate: z.string().nullable().optional(),
+  collectionDate: z.string().nullable().optional(),
+  patientIdentifier: z.string().nullable(), // Actual ID only; patient name is separate.
+  patientName: z.string().nullable().optional(),
+  patientAge: z.string().nullable().optional(),
+  patientSex: z.string().nullable().optional(),
   evidence: z.object({
     facility: EvidenceSchema.optional(),
     clinician: EvidenceSchema.optional(),
     date: EvidenceSchema.optional(),
-    patient: EvidenceSchema.optional()
+    reportDate: EvidenceSchema.optional(),
+    visitDate: EvidenceSchema.optional(),
+    collectionDate: EvidenceSchema.optional(),
+    patient: EvidenceSchema.optional(),
+    patientName: EvidenceSchema.optional(),
+    patientIdentifier: EvidenceSchema.optional(),
+    age: EvidenceSchema.optional(),
+    sex: EvidenceSchema.optional()
   })
 });
 

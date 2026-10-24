@@ -1,3 +1,5 @@
+import { resolveApiFileUrl, withDownloadFlag } from '../utils/reportFileUrl.js';
+
 /**
  * HealthCopilot AI — Backend API Client
  * Connects frontend React components to persistent backend endpoints.
@@ -34,6 +36,13 @@ export async function parseApiResponse(response) {
 }
 
 export const apiClient = {
+  resolveFileUrl(url) {
+    const pageOrigin = typeof window !== 'undefined' ? window.location.origin : 'http://localhost';
+    return resolveApiFileUrl(url, API_BASE, pageOrigin);
+  },
+  downloadFileUrl(url) {
+    return withDownloadFlag(this.resolveFileUrl(url));
+  },
   // Token helper
   getToken() {
     try {

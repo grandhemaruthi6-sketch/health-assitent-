@@ -448,7 +448,7 @@ export function extractClinicalFields(ocrResult, category) {
   let lowConfidenceCount = 0;
 
   // 1. Extract General Metadata (Facility, Clinician, Date, Patient)
-  const metadata = extractMetadata(fullText, pages);
+  const metadata = extractDocumentMetadata(fullText, pages);
 
   // Check if date was uncertain
   if (metadata.evidence.date?.presence === 'UNCERTAIN' || metadata.evidence.date?.presence === 'MISSING') {
@@ -1779,132 +1779,158 @@ function extractFollowUps(pages, fullText, followUpInstructions) {
 /**
  * Extracts General Document Metadata with Date Verification
  */
-function extractMetadata(fullText, pages) {
-  // Match facility: all-caps or title-case, anchored at line start or after a keyword (horizontal whitespace only)
-  const facility = fullText.match(/(?:^|\n)[ \t]*([A-Z][A-Z \t&]{2,50}(?:HOSPITAL|CLINIC|DIAGNOSTICS|LABORATORIES|LABORATORY|LABS?|PATHOLOGY|HEALTHCARE|MEDICAL CENTER|DIAGNOSTIC CENTER|CENTER|ASSOCIATES))[ \t]*(?:\r?\n|$)/im)?.[1]?.trim()
-    || fullText.match(/\b([A-Z][A-Za-z \t&]{3,50}(?:Hospital|Clinic|Diagnostics|Labs?|Laboratories|Laboratory|Pathology|Healthcare|Medical Center|Diagnostic Center|Center|Associates))\b/i)?.[1]?.trim()
+function normalizeClinicalDate(rawDate) {
+  if (!rawDate || typeof rawDate !== 'string') return null;
+  const raw = rawDate.trim().replace(/[.,]+$/, '');
+  const months = {
+    jan: 1, january: 1, feb: 2, february: 2, mar: 3, march: 3,
+    apr: 4, april: 4, may: 5, jun: 6, june: 6, jul: 7, july: 7,
+    aug: 8, august: 8, sep: 9, sept: 9, september: 9,
+    oct: 10, october: 10, nov: 11, november: 11, dec: 12, december: 12
+  };
+  const normalizeParts = (yearInput, monthInput, dayInput) => {
+    let year = Number(yearInput);
+    const month = typeof monthInput === 'string' ? months[monthInput.toLowerCase()] : Number(monthInput);
+    const day = Number(dayInput);
+    if (String(yearInput).length === 2) year += year < 50 ? 2000 : 1900;
+    if (!Number.isInteger(year) || year < 1900 || year > 2100 ||
+        !Number.isInteger(month) || month < 1 || month > 12 ||
+        !Number.isInteger(day) || day < 1 || day > 31) return null;
+    const checked = new Date(Date.UTC(year, month - 1, day));
+    if (checked.getUTCFullYear() !== year || checked.getUTCMonth() !== month - 1 || checked.getUTCDate() !== day) return null;
+    return [String(year), String(month).padStart(2, '0'), String(day).padStart(2, '0')].join('-');
+  };
+
+  let match = raw.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+  if (match) return normalizeParts(match[1], match[2], match[3]);
+  match = raw.match(/^(\d{1,2})[/-]([A-Za-z]{3,9})[/-](\d{2,4})$/);
+  if (match) return normalizeParts(match[3], match[2], match[1]);
+  match = raw.match(/^(\d{1,2})\s+([A-Za-z]{3,9})\s+(\d{2,4})$/);
+  if (match) return normalizeParts(match[3], match[2], match[1]);
+  match = raw.match(/^([A-Za-z]{3,9})\s+(\d{1,2}),?\s+(\d{2,4})$/);
+  if (match) return normalizeParts(match[3], match[1], match[2]);
+  match = raw.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{2,4})$/);
+  if (match) {
+    const first = Number(match[1]);
+    const second = Number(match[2]);
+    if (first > 12 && second <= 12) return normalizeParts(match[3], second, first);
+    if (second > 12 && first <= 12) return normalizeParts(match[3], first, second);
+    return normalizeParts(match[3], second, first);
+  }
+  return null;
+}
+
+function cleanMetadataValue(value, stopLabels = []) {
+  if (typeof value !== 'string') return null;
+  let result = value.trim();
+  if (stopLabels.length) {
+    const stopPattern = new RegExp('[;,]?\\s+(?=(?:' + stopLabels.join('|') + ')\\s*[:：=-])', 'i');
+    result = result.split(stopPattern)[0].trim();
+  }
+  result = result.replace(/^[\s:：=-]+|[\s,;|]+$/g, '').replace(/\s{2,}/g, ' ');
+  return result || null;
+}
+
+/**
+ * Extract general document metadata from a wide range of hospital and lab report layouts.
+ * Returns source-specific values rather than assigning a single date to every date field.
+ */
+export function extractDocumentMetadata(fullText, pages = []) {
+  const text = typeof fullText === 'string' ? fullText : '';
+  const lines = text.split(/\r?\n/).map(line => line.trim().replace(/\s{2,}/g, ' ')).filter(Boolean);
+  const headerLines = lines.slice(0, 30);
+
+  const labelledFacility = text.match(/\b(?:facility\s*name|laboratory\s*name|lab\s*name|hospital\s*name|clinic\s*name|diagnostic\s*centre\s*name|diagnostic\s*center\s*name)\s*[:：=-]\s*([^\r\n]{2,90})/i)?.[1] || null;
+  const facilitySuffix = /(?:hospital|labs?|laborator(?:y|ies)|clinics?|diagnostics?|diagnostic\s+(?:centre|center)|medical\s+(?:centre|center)|healthcare|health\s+system|pathology|medical\s+institute|medical\s+college|health\s+services|associates|medical\s+trust|health\s+centre|health\s+center)$/i;
+  const rejectFacilityLine = /(?:laboratory investigation report|investigation report|test report|clinical biochemistry|clinical pathology|kidney function test|complete blood count|reference range|patient name|collection date|reporting date|specimen date|sample date|bill\s+to|page\s+\d+)/i;
+  const facilityLine = headerLines.find(line =>
+    line.length >= 4 && line.length <= 90 &&
+    facilitySuffix.test(line.replace(/[|•]+$/g, '').trim()) &&
+    !rejectFacilityLine.test(line)
+  );
+  const facility = cleanMetadataValue(labelledFacility, [
+    'branch', 'address', 'location', 'department', 'dept', 'phone', 'email', 'date', 'patient'
+  ]) || facilityLine || null;
+
+  const clinician = text.match(/\b(Dr\.?\s+[A-Z][a-zA-Z.'-]+(?:\s+[A-Z][a-zA-Z.'-]+){0,3}(?:,?\s*(?:MD|MBBS|MS|DNB|FRCS|DO|DM))?)\b/i)?.[1]?.trim() || null;
+
+  const stopLabels = [
+    'Age(?:\\s*\\/\\s*(?:Sex|Gender))?', 'Sex', 'Gender', 'Patient\\s*ID', 'UHID', 'MRN',
+    'Registration\\s*(?:No\\.?|Number)', 'Lab\\s*ID', 'Date', 'Visit\\s*Date',
+    'Collection\\s*Date', 'Reporting\\s*Date', 'Sample\\s*Date', 'Specimen\\s*Date',
+    'Ref(?:erred)?\\s*By', 'Doctor', 'Dr\\.?'
+  ];
+  const patientNameRaw = text.match(/\b(?:patient\s*name|name\s+of\s+patient)\s*[:：=-]\s*([^\r\n]+)/i)?.[1]
+    || text.match(/(?:^|\n)\s*patient\s*[:：=-]\s*([^\r\n]+)/i)?.[1]
     || null;
+  const patientName = cleanMetadataValue(patientNameRaw, stopLabels);
+  const patientIdentifier = text.match(/\b(?:patient\s*id|uhid|mrn|medical\s*record\s*(?:no\.?|number)|registration\s*(?:no\.?|number)|lab\s*id|patient\s*(?:no\.?|number))\s*[:：=-]\s*([A-Z0-9][A-Z0-9./_-]{2,})/i)?.[1]?.trim() || null;
 
-  const clinician = fullText.match(/\b(Dr\.\s+[A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)?(?:,\s*(?:MD|MBBS|MS|DNB|FRCS))?)\b/i)?.[1]?.trim() || null;
-  
-  // Multi-date table header e.g. "12/08/20        04/12/19        19/06/19"
-  const multiDateMatch = fullText.match(/\b(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})\s+(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})(?:\s+(\d{1,2}[/-]\d{1,2}[/-]\d{2,4}))?\b/);
+  const ageSexLine = text.match(/\b(?:age\s*\/\s*(?:sex|gender)|age\s+and\s+(?:sex|gender))\s*[:：=-]\s*([^\r\n]+)/i)?.[1] || '';
+  const ageRaw = text.match(/\bage\s*[:：=-]\s*(\d{1,3}(?:\.\d+)?\s*(?:years?|yrs?\.?|yr|y|months?|mos?\.?|days?)?)/i)?.[1]
+    || ageSexLine.match(/^\s*(\d{1,3}(?:\.\d+)?\s*(?:years?|yrs?\.?|yr|y|months?|mos?\.?|days?)?)/i)?.[1]
+    || null;
+  const patientAge = ageRaw ? ageRaw.trim().replace(/\s+/g, ' ') : null;
+  const labelledSex = text.match(/\b(?:sex|gender)\s*[:：=-]\s*(female|male|non[- ]?binary|other|unknown|f|m)\b/i)?.[1] || null;
+  const combinedSex = ageSexLine.match(/\b(female|male|non[- ]?binary|other|unknown)\b/i)?.[1]
+    || ageSexLine.match(/(?:^|[\/,\s])(F|M)(?:\s*$|[\/,\s])/i)?.[1]
+    || null;
+  const rawSex = labelledSex || combinedSex;
+  const patientSex = rawSex
+    ? (/^(f|female)$/i.test(rawSex) ? 'Female' : (/^(m|male)$/i.test(rawSex) ? 'Male' : rawSex.replace(/[- ]/g, ' ').replace(/\b\w/g, char => char.toUpperCase())))
+    : null;
 
-  // Date pattern: captures ISO format, slash format, or Month DD, YYYY
-  // Prefer report date over collection dates and historical-result columns.
-  // Supports MAX Lab labels such as "Reporting Date/Time" and dates like "19/Apr/2023".
-  const dateValuePattern = '(\\d{4}-\\d{2}-\\d{2}|\\d{1,2}[/-](?:\\d{1,2}|[A-Za-z]{3,9})[/-]\\d{2,4}|\\d{1,2}\\s+[A-Za-z]{3,9}\\s+\\d{2,4}|\\w{3}\\s+\\d{1,2},?\\s+\\d{4})';
-  const dateMatchFromLabels = labels => fullText.match(new RegExp(
+  const multiDateMatch = text.match(/\b(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})\s+(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})(?:\s+(\d{1,2}[/-]\d{1,2}[/-]\d{2,4}))?\b/);
+  const dateValuePattern = '(\\d{4}-\\d{2}-\\d{2}|\\d{1,2}[/-](?:\\d{1,2}|[A-Za-z]{3,9})[/-]\\d{2,4}|\\d{1,2}\\s+[A-Za-z]{3,9}\\s+\\d{2,4}|[A-Za-z]{3,9}\\s+\\d{1,2},?\\s+\\d{2,4})';
+  const matchDateLabel = labels => text.match(new RegExp(
     '\\b(?:' + labels + ')\\s*[:：=–-]?\\s*' + dateValuePattern,
     'i'
   ));
-  const reportDateMatch = dateMatchFromLabels('Reporting\\s+Date(?:\\s*\\/\\s*Time)?|Reported\\s+Date(?:\\s*\\/\\s*Time)?|Report\\s+Date(?:\\s*\\/\\s*Time)?|Date\\s+of\\s+(?:Report|Issue|Study)');
-  const collectionDateMatch = dateMatchFromLabels('Collection\\s+Date(?:\\s*\\/\\s*Time)?|Date\\s+of\\s+Collection|Collected\\s+Date|Sample\\s+Collection\\s+Date|Specimen\\s+Collection\\s+Date|Specimen\\s+Date|Sample\\s+Date|Receipt\\s+Date(?:\\s*\\/\\s*Time)?|Received\\s+Date|Registration\\s+Date(?:\\s*\\/\\s*Time)?|Visit\\s+Date|Admission\\s+Date|Discharge\\s+Date');
-  const genericDateMatch = dateMatchFromLabels('Date|Dated');
-  const dateMatch = reportDateMatch || collectionDateMatch || genericDateMatch;
-  const usedMultiDateFallback = !dateMatch && Boolean(multiDateMatch);
-  let rawDate = dateMatch ? dateMatch[1].trim() : (usedMultiDateFallback ? multiDateMatch[1].trim() : null);
-  let normalizedDate = null;
-  let dateConfidence = rawDate ? (usedMultiDateFallback ? 0.55 : 0.95) : null;
-  let datePresence = !rawDate ? 'MISSING' : (usedMultiDateFallback ? 'UNCERTAIN' : 'EXPLICIT');
-
-  if (rawDate) {
-    if (/^\d{4}-\d{2}-\d{2}$/.test(rawDate)) {
-      normalizedDate = rawDate;
-    } else if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(rawDate)) {
-      const parts = rawDate.split('/');
-      const p0 = parseInt(parts[0], 10);
-      const p1 = parseInt(parts[1], 10);
-      const year = parseInt(parts[2], 10);
-      let month, day;
-      if (p0 > 12 && p1 <= 12) {
-        day = p0;
-        month = p1;
-      } else if (p1 > 12 && p0 <= 12) {
-        month = p0;
-        day = p1;
-      } else {
-        day = p0;
-        month = p1;
-      }
-      normalizedDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    } else if (/^\d{1,2}\/\d{1,2}\/\d{2}$/.test(rawDate)) {
-      const parts = rawDate.split('/');
-      const p0 = parseInt(parts[0], 10);
-      const p1 = parseInt(parts[1], 10);
-      const p2 = parseInt(parts[2], 10);
-      const year = p2 < 50 ? 2000 + p2 : 1900 + p2;
-      let month, day;
-      if (p0 > 12 && p1 <= 12) {
-        day = p0;
-        month = p1;
-      } else if (p1 > 12 && p0 <= 12) {
-        month = p0;
-        day = p1;
-      } else {
-        day = p0;
-        month = p1;
-      }
-      normalizedDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    } else {
-      const parsed = Date.parse(rawDate);
-      if (!isNaN(parsed)) {
-        normalizedDate = new Date(parsed).toISOString().split('T')[0];
-      } else {
-        normalizedDate = rawDate;
-        dateConfidence = 0.60;
-        datePresence = 'UNCERTAIN';
-      }
-    }
-  } else {
-    // Check if any bare date exists in document
-    const fallbackDate = fullText.match(/\b(\d{4}-\d{2}-\d{2})\b/);
-    if (fallbackDate) {
-      normalizedDate = fallbackDate[1];
-      dateConfidence = 0.70;
-      datePresence = 'UNCERTAIN';
-    } else {
-      datePresence = 'MISSING';
-      dateConfidence = null;
-    }
-  }
-
-  const patient = fullText.match(/\b(?:Patient Name|Patient|Name)[\s:]+([^\n,\r]+)/i)?.[1]?.trim() || null;
+  const reportDateMatch = matchDateLabel('Reporting\\s+Date(?:\\s*\\/\\s*Time)?|Reported\\s+Date(?:\\s*\\/\\s*Time)?|Report\\s+Date(?:\\s*\\/\\s*Time)?|Date\\s+of\\s+(?:Report|Issue|Study)');
+  const visitDateMatch = matchDateLabel('Clinical\\s+Encounter\\s+Date|Encounter\\s+Date|Visit\\s+Date|Appointment\\s+Date|Consultation\\s+Date');
+  const collectionDateMatch = matchDateLabel('Collection\\s+Date(?:\\s*\\/\\s*Time)?|Date\\s+of\\s+Collection|Collected\\s+Date|Sample\\s+Collection\\s+Date|Specimen\\s+Collection\\s+Date|Specimen\\s+Date|Sample\\s+Date|Date\\s+of\\s+Test|Test\\s+Date|Receipt\\s+Date(?:\\s*\\/\\s*Time)?|Received\\s+Date|Registration\\s+Date(?:\\s*\\/\\s*Time)?|Date\\s+Drawn');
+  const genericDateMatch = matchDateLabel('Date|Dated');
+  const selectedReportMatch = reportDateMatch || genericDateMatch || collectionDateMatch || visitDateMatch;
+  const reportDateRaw = selectedReportMatch?.[1]?.trim() || null;
+  const visitDateRaw = visitDateMatch?.[1]?.trim() || collectionDateMatch?.[1]?.trim() || genericDateMatch?.[1]?.trim() || null;
+  const collectionDateRaw = collectionDateMatch?.[1]?.trim() || null;
+  const reportDateExplicit = Boolean(reportDateMatch);
+  const usedMultiDateFallback = !selectedReportMatch && Boolean(multiDateMatch);
+  const normalizedReportDate = normalizeClinicalDate(reportDateRaw) || (usedMultiDateFallback ? normalizeClinicalDate(multiDateMatch[1]) : null);
+  const normalizedVisitDate = normalizeClinicalDate(visitDateRaw) || normalizedReportDate || null;
+  const normalizedCollectionDate = normalizeClinicalDate(collectionDateRaw) || null;
+  const documentDate = normalizedReportDate || normalizedCollectionDate || normalizedVisitDate || null;
+  const rawDateEvidence = reportDateRaw || collectionDateRaw || visitDateRaw || (usedMultiDateFallback ? multiDateMatch[1] : null);
+  const datePresence = !rawDateEvidence ? 'MISSING' : (usedMultiDateFallback ? 'UNCERTAIN' : 'EXPLICIT');
+  const reportDatePresence = !reportDateRaw ? (usedMultiDateFallback ? 'UNCERTAIN' : 'MISSING') : (reportDateExplicit ? 'EXPLICIT' : 'INFERRED');
+  const visitDatePresence = (visitDateMatch || collectionDateMatch) ? 'EXPLICIT' : (genericDateMatch ? 'INFERRED' : 'MISSING');
 
   return {
     facilityName: facility,
     clinicianName: clinician,
-    documentDate: normalizedDate,
-    patientIdentifier: patient,
+    documentDate,
+    reportDate: normalizedReportDate,
+    visitDate: normalizedVisitDate,
+    collectionDate: normalizedCollectionDate,
+    patientIdentifier,
+    patientName,
+    patientAge,
+    patientSex,
     evidence: {
-      facility: {
-        presence: facility ? 'EXPLICIT' : 'MISSING',
-        pageNumber: 1,
-        rawSnippet: facility,
-        confidence: facility ? 0.95 : null
-      },
-      clinician: {
-        presence: clinician ? 'EXPLICIT' : 'MISSING',
-        pageNumber: 1,
-        rawSnippet: clinician,
-        confidence: clinician ? 0.95 : null
-      },
-      date: {
-        presence: datePresence,
-        pageNumber: 1,
-        rawSnippet: rawDate,
-        confidence: dateConfidence
-      },
-      patient: {
-        presence: patient ? 'EXPLICIT' : 'MISSING',
-        pageNumber: 1,
-        rawSnippet: patient,
-        confidence: patient ? 0.95 : null
-      }
+      facility: { presence: facility ? 'EXPLICIT' : 'MISSING', pageNumber: 1, rawSnippet: facility, confidence: facility ? 0.95 : null },
+      clinician: { presence: clinician ? 'EXPLICIT' : 'MISSING', pageNumber: 1, rawSnippet: clinician, confidence: clinician ? 0.95 : null },
+      date: { presence: datePresence, pageNumber: 1, rawSnippet: rawDateEvidence, confidence: rawDateEvidence ? (usedMultiDateFallback ? 0.55 : 0.90) : null },
+      reportDate: { presence: reportDatePresence, pageNumber: 1, rawSnippet: reportDateRaw, confidence: reportDateRaw ? (reportDateExplicit ? 0.97 : 0.78) : null },
+      visitDate: { presence: visitDatePresence, pageNumber: 1, rawSnippet: visitDateRaw, confidence: visitDateRaw ? 0.92 : null },
+      collectionDate: { presence: collectionDateRaw ? 'EXPLICIT' : 'MISSING', pageNumber: 1, rawSnippet: collectionDateRaw, confidence: collectionDateRaw ? 0.95 : null },
+      patient: { presence: patientName ? 'EXPLICIT' : 'MISSING', pageNumber: 1, rawSnippet: patientName, confidence: patientName ? 0.95 : null },
+      patientName: { presence: patientName ? 'EXPLICIT' : 'MISSING', pageNumber: 1, rawSnippet: patientName, confidence: patientName ? 0.95 : null },
+      age: { presence: patientAge ? 'EXPLICIT' : 'MISSING', pageNumber: 1, rawSnippet: patientAge, confidence: patientAge ? 0.90 : null },
+      sex: { presence: patientSex ? 'EXPLICIT' : 'MISSING', pageNumber: 1, rawSnippet: patientSex, confidence: patientSex ? 0.90 : null },
+      patientIdentifier: { presence: patientIdentifier ? 'EXPLICIT' : 'MISSING', pageNumber: 1, rawSnippet: patientIdentifier, confidence: patientIdentifier ? 0.95 : null }
     }
   };
 }
-
 /**
  * Generates Evidence-Linked Plain-Language Explanation
  */

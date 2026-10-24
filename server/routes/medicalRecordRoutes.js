@@ -403,7 +403,8 @@ medicalRecordRouter.get('/reports/:id/download', (req, res, next) => {
 
     res.setHeader('Content-Type', report.mime_type || 'application/octet-stream');
     res.setHeader('Content-Length', fileBuffer.length);
-    res.setHeader('Content-Disposition', `inline; filename="${encodeURIComponent(report.file_name)}"`);
+    const disposition = req.query.download === '1' ? 'attachment' : 'inline';
+    res.setHeader('Content-Disposition', `${disposition}; filename="${encodeURIComponent(report.file_name)}"`);
     res.setHeader('Cache-Control', 'private, no-cache, no-store, must-revalidate');
 
     return res.end(fileBuffer);

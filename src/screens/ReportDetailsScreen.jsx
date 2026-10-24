@@ -4,6 +4,7 @@ import { Header } from '../components/common/Header';
 import { apiClient } from '../services/apiClient';
 import { REPORT_TYPES } from '../data/mockData';
 import { AIHealthSummaryCard } from '../components/reports/AIHealthSummaryCard';
+import { mapSavedReport } from '../utils/medicalReportMapping';
 
 export const ReportDetailsScreen = () => {
   const {
@@ -39,40 +40,7 @@ export const ReportDetailsScreen = () => {
         setIsLoadingReport(true);
         const data = await apiClient.reports.getById(activeReportId);
         if (data) {
-          setDetailedReport({
-            ...data,
-            date: new Date(data.reportDate || data.uploadedAt).toLocaleDateString('en-US', {
-              month: 'short',
-              day: 'numeric',
-              year: 'numeric'
-            }),
-            doctorName: data.physicianName || '',
-            hospitalName: data.hospital?.name || data.hospitalName || 'Clinical Facility',
-            biomarkers: data.aiAnalysis?.extractedBiomarkers || data.aiAnalysis?.labResults?.map((lr, idx) => {
-              const rawRange = lr.referenceRange?.rawRange || lr.referenceInterval?.rawRange || (
-                lr.referenceRange?.low != null && lr.referenceRange?.high != null
-                  ? `${lr.referenceRange.low} - ${lr.referenceRange.high}`
-                  : 'Unavailable'
-              );
-              return {
-                id: `bm-${idx}`,
-                name: lr.name,
-                category: lr.category || data.category,
-                value: lr.numericValue != null ? lr.numericValue : (lr.rawValue || lr.value || 'N/A'),
-                numericValue: lr.numericValue,
-                rawValue: lr.rawValue,
-                unit: lr.unit || '',
-                minRange: lr.referenceRange?.low ?? lr.referenceInterval?.low ?? null,
-                maxRange: lr.referenceRange?.high ?? lr.referenceInterval?.high ?? null,
-                rawRange,
-                status: lr.status === 'NORMAL' ? 'Normal' : (lr.status === 'HIGH' ? 'Slightly Elevated' : (lr.status === 'LOW' ? 'Low' : 'Normal')),
-                explanation: lr.interpretation || 'Clinical measurement from verified source document.',
-                historicalReadings: lr.historicalReadings || [],
-                flags: lr.flags,
-                evidence: lr.evidence
-              };
-            }) || []
-          });
+          setDetailedReport(mapSavedReport(data));
         }
       } catch (err) {
         console.warn('[ReportDetails] Error fetching report:', err.message);
@@ -88,7 +56,7 @@ export const ReportDetailsScreen = () => {
     if (detailedReport) {
       setEditTitle(detailedReport.title || '');
       setEditCategory(detailedReport.category || detailedReport.reportType || 'Lab Report');
-      setEditReportDate(detailedReport.reportDate || (detailedReport.timestamp ? detailedReport.timestamp.split('T')[0] : '2026-10-15'));
+      setEditReportDate(detailedReport.reportDate || '');
       setEditPhysician(detailedReport.physicianName || detailedReport.doctorName || '');
     }
   }, [detailedReport]);
@@ -132,10 +100,13 @@ export const ReportDetailsScreen = () => {
     : biomarkers.filter(b => b.category === activeTabFilter);
 
   const handleDownload = () => {
-    if (currentReport.signedDownloadUrl) {
-      window.open(currentReport.signedDownloadUrl, '_blank');
+    const downloadUrl = apiClient.downloadFileUrl(currentReport.signedDownloadUrl);
+    if (!downloadUrl) {
+      setDownloadNotification('The original document is unavailable for download.');
+      return;
     }
-    setDownloadNotification(true);
+    window.open(downloadUrl, '_blank', 'noopener,noreferrer');
+    setDownloadNotification('Download opened securely.');
     setTimeout(() => setDownloadNotification(false), 3000);
   };
 
@@ -176,6 +147,7 @@ export const ReportDetailsScreen = () => {
 
   const isImageFile = currentReport.mimeType?.startsWith('image/') ||
     currentReport.fileName?.match(/\.(jpe?g|png|webp)$/i);
+  const resolvedFileUrl = apiClient.resolveFileUrl(currentReport.signedDownloadUrl);
 
   return (
     <div className="flex-1 flex flex-col h-full bg-[#F8FAFC] select-none overflow-hidden">
@@ -218,8 +190,8 @@ export const ReportDetailsScreen = () => {
       <main className="flex-1 overflow-y-auto px-5 pt-3.5 pb-6 space-y-4">
         {/* Toast alert for download */}
         {downloadNotification && (
-          <div className="bg-emerald-600 text-white text-xs px-3 py-2 rounded-xl text-center shadow-lg animate-in fade-in">
-            ✓ Document opened / exported securely from private vault!
+          <div className={`text-xs px-3 py-2 rounded-xl text-center shadow-lg animate-in fade-in ${String(downloadNotification).includes('unavailable') ? 'bg-rose-600 text-white' : 'bg-emerald-600 text-white'}`}>
+            {downloadNotification}
           </div>
         )}
 
@@ -268,13 +240,13 @@ export const ReportDetailsScreen = () => {
             <div>
               <span className="text-[10px] text-slate-400 block font-medium">Hospital Facility</span>
               <span className="font-bold text-slate-900 block truncate">
-                {currentReport.hospitalName || currentReport.labName || "Clinical Facility"}
+                {currentReport.hospitalName || currentReport.labName || "Facility not identified"}
               </span>
             </div>
             <div>
               <span className="text-[10px] text-slate-400 block font-medium">Reviewing Clinician</span>
               <span className="font-bold text-slate-900 block truncate">
-                {currentReport.doctorName || currentReport.physicianName || "Dr. Sarah Jenkins, MD"}
+                {currentReport.doctorName || currentReport.physicianName || "Not detected"}
               </span>
             </div>
             <div>
@@ -282,6 +254,11 @@ export const ReportDetailsScreen = () => {
               <span className="font-bold text-slate-900 block">
                 {currentReport.date || currentReport.reportDate}
               </span>
+            </div>
+            <div>
+              <span className="text-[10px] text-slate-400 block font-medium">Patient</span>
+              <span className="font-bold text-slate-900 block truncate">{currentReport.patientName || 'Name not detected'}</span>
+              <span className="text-[10px] text-slate-500 block">{[currentReport.patientAge, currentReport.patientSex].filter(Boolean).join(' • ') || 'Age / sex not detected'}</span>
             </div>
             <div>
               <span className="text-[10px] text-slate-400 block font-medium">File Security</span>
@@ -300,7 +277,7 @@ export const ReportDetailsScreen = () => {
             </h3>
             {currentReport.signedDownloadUrl && (
               <a
-                href={currentReport.signedDownloadUrl}
+                href={resolvedFileUrl}
                 target="_blank"
                 rel="noreferrer"
                 className="text-[11px] font-bold text-brand-600 hover:underline flex items-center gap-1"
@@ -311,10 +288,10 @@ export const ReportDetailsScreen = () => {
             )}
           </div>
 
-          {currentReport.previewUrl || (currentReport.signedDownloadUrl && isImageFile) ? (
+          {currentReport.previewUrl || (resolvedFileUrl && isImageFile) ? (
             <div className="relative rounded-xl overflow-hidden border border-slate-200 bg-slate-900 max-h-56 flex items-center justify-center">
               <img
-                src={currentReport.previewUrl || currentReport.signedDownloadUrl}
+                src={currentReport.previewUrl || resolvedFileUrl}
                 alt="Medical document preview"
                 className="w-full h-full object-contain cursor-pointer"
                 onClick={() => setShowPreviewModal(true)}
@@ -326,6 +303,12 @@ export const ReportDetailsScreen = () => {
                 🔍 Expand
               </button>
             </div>
+          ) : resolvedFileUrl && !isImageFile ? (
+            <iframe
+              title="Original medical report PDF"
+              src={resolvedFileUrl}
+              className="w-full h-64 rounded-xl border border-slate-200 bg-white"
+            />
           ) : (
             <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
               <div className="flex items-center space-x-3">
@@ -343,7 +326,7 @@ export const ReportDetailsScreen = () => {
               </div>
               {currentReport.signedDownloadUrl ? (
                 <a
-                  href={currentReport.signedDownloadUrl}
+                  href={resolvedFileUrl}
                   target="_blank"
                   rel="noreferrer"
                   className="px-3 py-1.5 bg-brand-500 hover:bg-brand-600 text-white rounded-lg text-xs font-bold shadow-xs transition"
@@ -648,11 +631,19 @@ export const ReportDetailsScreen = () => {
             </button>
           </div>
           <div className="flex-1 flex items-center justify-center p-2">
-            <img
-              src={currentReport.previewUrl || currentReport.signedDownloadUrl}
-              alt="Full report preview"
-              className="max-h-[80vh] max-w-full object-contain rounded-xl"
-            />
+            {isImageFile ? (
+              <img
+                src={currentReport.previewUrl || resolvedFileUrl}
+                alt="Full report preview"
+                className="max-h-[80vh] max-w-full object-contain rounded-xl"
+              />
+            ) : (
+              <iframe
+                title="Full medical report preview"
+                src={resolvedFileUrl}
+                className="w-full h-[80vh] bg-white rounded-xl"
+              />
+            )}
           </div>
         </div>
       )}
