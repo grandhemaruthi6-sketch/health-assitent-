@@ -1790,7 +1790,7 @@ function normalizeClinicalDate(rawDate) {
   };
   const normalizeParts = (yearInput, monthInput, dayInput) => {
     let year = Number(yearInput);
-    const month = typeof monthInput === 'string' ? months[monthInput.toLowerCase()] : Number(monthInput);
+    const month = typeof monthInput === 'string' && !/^\d+$/.test(monthInput) ? months[monthInput.toLowerCase()] : Number(monthInput);
     const day = Number(dayInput);
     if (String(yearInput).length === 2) year += year < 50 ? 2000 : 1900;
     if (!Number.isInteger(year) || year < 1900 || year > 2100 ||
