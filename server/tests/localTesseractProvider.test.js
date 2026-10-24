@@ -35,7 +35,7 @@ test('local provider returns structured OCR output from extracted text', async (
   assert.equal(result.provider, 'tesseract-local');
   assert.equal(result.processingStatus, 'SUCCESS');
   assert.equal(result.pageCount, 1);
-  assert.match(result.fullText, /Hemoglobin: 13.2 g\\/dL/);
+  assert.ok(result.fullText.includes('Hemoglobin: 13.2 g/dL'));
   assert.equal(result.metadata.cloudBillingRequired, false);
   assert.equal(result.pages[0].layout.lines.length, 4);
 });

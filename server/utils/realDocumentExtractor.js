@@ -122,7 +122,7 @@ export async function extractTextFromRealPdf(buffer, { ocrScannedPdf = false } =
 
   const renderedImages = (screenshotResult?.pages || [])
     .map((page, index) => ({
-      pageNumber: Number(page.pageNumber || page.num || requestedPages?.[index] || index + 1),
+      pageNumber: Number(requestedPages?.[index] || page.pageNumber || page.num || index + 1),
       data: page.data || page.imageBuffer || page.buffer
     }))
     .filter(page => page.data);
