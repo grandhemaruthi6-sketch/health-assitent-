@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "server": "node server/server.js",
+    "test:api-response": "node --test server/tests/apiResponseHandling.test.js",
     "test:facility-metadata": "node --test server/tests/facilityMetadataExtraction.test.js",
     "test:ocr": "node server/tests/runOcrTests.js",
     "test:clinical": "node server/tests/clinicalPipeline.test.js",
@@ -28,7 +29,7 @@
     "test:correctness": "node server/tests/clinicalValueCorrectness.test.js",
     "test:continuity": "node server/tests/continuityEngine.test.js",
     "test:milestone2": "node server/tests/structuredReportsMilestone2.test.js",
-    "test:all": "node --test server/tests/facilityMetadataExtraction.test.js && node server/tests/runOcrTests.js && node server/tests/clinicalPipeline.test.js && node server/tests/persistenceAndAuth.test.js && node server/tests/documentIsolationAndUrinalysis.test.js && node server/tests/multiDateCbcAndPersistence.test.js && node server/tests/evidenceGroundedSummary.test.js && node server/tests/verifyOcrActiveProviderAndTrace.js && node server/tests/conversationalVoice.test.js && node server/tests/voiceUploadAndKnowledgeBase.test.js && node server/tests/googleDocumentAiIntegration.test.js && node server/tests/firebaseInit.test.js && node server/tests/firebaseEmailAuthWorkflow.test.js && node server/tests/clinicalValueCorrectness.test.js && node server/tests/continuityEngine.test.js && node server/tests/structuredReportsMilestone2.test.js"
+    "test:all": "node --test server/tests/apiResponseHandling.test.js && node --test server/tests/facilityMetadataExtraction.test.js && node server/tests/runOcrTests.js && node server/tests/clinicalPipeline.test.js && node server/tests/persistenceAndAuth.test.js && node server/tests/documentIsolationAndUrinalysis.test.js && node server/tests/multiDateCbcAndPersistence.test.js && node server/tests/evidenceGroundedSummary.test.js && node server/tests/verifyOcrActiveProviderAndTrace.js && node server/tests/conversationalVoice.test.js && node server/tests/voiceUploadAndKnowledgeBase.test.js && node server/tests/googleDocumentAiIntegration.test.js && node server/tests/firebaseInit.test.js && node server/tests/firebaseEmailAuthWorkflow.test.js && node server/tests/clinicalValueCorrectness.test.js && node server/tests/continuityEngine.test.js && node server/tests/structuredReportsMilestone2.test.js"
   },
   "dependencies": {
     "@google-cloud/documentai": "^10.2.0",
