@@ -1781,8 +1781,8 @@ function extractFollowUps(pages, fullText, followUpInstructions) {
  */
 function extractMetadata(fullText, pages) {
   // Match facility: all-caps or title-case, anchored at line start or after a keyword (horizontal whitespace only)
-  const facility = fullText.match(/(?:^|\n)[ \t]*([A-Z][A-Z \t&]{2,50}(?:HOSPITAL|CLINIC|DIAGNOSTICS|LABORATORIES|LABORATORY|PATHOLOGY|HEALTHCARE|MEDICAL CENTER|DIAGNOSTIC CENTER|CENTER|ASSOCIATES))[ \t]*(?:\r?\n|$)/im)?.[1]?.trim()
-    || fullText.match(/\b([A-Z][A-Za-z \t&]{3,50}(?:Hospital|Clinic|Diagnostics|Laboratories|Laboratory|Pathology|Healthcare|Medical Center|Diagnostic Center|Center|Associates))\b/i)?.[1]?.trim()
+  const facility = fullText.match(/(?:^|\n)[ \t]*([A-Z][A-Z \t&]{2,50}(?:HOSPITAL|CLINIC|DIAGNOSTICS|LABORATORIES|LABORATORY|LABS?|PATHOLOGY|HEALTHCARE|MEDICAL CENTER|DIAGNOSTIC CENTER|CENTER|ASSOCIATES))[ \t]*(?:\r?\n|$)/im)?.[1]?.trim()
+    || fullText.match(/\b([A-Z][A-Za-z \t&]{3,50}(?:Hospital|Clinic|Diagnostics|Labs?|Laboratories|Laboratory|Pathology|Healthcare|Medical Center|Diagnostic Center|Center|Associates))\b/i)?.[1]?.trim()
     || null;
 
   const clinician = fullText.match(/\b(Dr\.\s+[A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)?(?:,\s*(?:MD|MBBS|MS|DNB|FRCS))?)\b/i)?.[1]?.trim() || null;
@@ -1791,11 +1791,22 @@ function extractMetadata(fullText, pages) {
   const multiDateMatch = fullText.match(/\b(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})\s+(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})(?:\s+(\d{1,2}[/-]\d{1,2}[/-]\d{2,4}))?\b/);
 
   // Date pattern: captures ISO format, slash format, or Month DD, YYYY
-  const dateMatch = fullText.match(/\b(?:Date|Dated|Sample Date|Visit Date|Date of Issue|Date of Study|Discharge Date|Admission Date)[\s:]+(\d{4}-\d{2}-\d{2}|\d{1,2}\/\d{1,2}\/\d{2,4}|\w{3}\s+\d{1,2},?\s+\d{4})\b/i);
-  let rawDate = dateMatch ? dateMatch[1].trim() : (multiDateMatch ? multiDateMatch[1].trim() : null);
+  // Prefer report date over collection dates and historical-result columns.
+  // Supports MAX Lab labels such as "Reporting Date/Time" and dates like "19/Apr/2023".
+  const dateValuePattern = '(\\d{4}-\\d{2}-\\d{2}|\\d{1,2}[/-](?:\\d{1,2}|[A-Za-z]{3,9})[/-]\\d{2,4}|\\d{1,2}\\s+[A-Za-z]{3,9}\\s+\\d{2,4}|\\w{3}\\s+\\d{1,2},?\\s+\\d{4})';
+  const dateMatchFromLabels = labels => fullText.match(new RegExp(
+    '\\b(?:' + labels + ')\\s*[:：=–-]?\\s*' + dateValuePattern,
+    'i'
+  ));
+  const reportDateMatch = dateMatchFromLabels('Reporting\\s+Date(?:\\s*\\/\\s*Time)?|Reported\\s+Date(?:\\s*\\/\\s*Time)?|Report\\s+Date(?:\\s*\\/\\s*Time)?|Date\\s+of\\s+(?:Report|Issue|Study)');
+  const collectionDateMatch = dateMatchFromLabels('Collection\\s+Date(?:\\s*\\/\\s*Time)?|Date\\s+of\\s+Collection|Collected\\s+Date|Sample\\s+Collection\\s+Date|Specimen\\s+Collection\\s+Date|Specimen\\s+Date|Sample\\s+Date|Receipt\\s+Date(?:\\s*\\/\\s*Time)?|Received\\s+Date|Registration\\s+Date(?:\\s*\\/\\s*Time)?|Visit\\s+Date|Admission\\s+Date|Discharge\\s+Date');
+  const genericDateMatch = dateMatchFromLabels('Date|Dated');
+  const dateMatch = reportDateMatch || collectionDateMatch || genericDateMatch;
+  const usedMultiDateFallback = !dateMatch && Boolean(multiDateMatch);
+  let rawDate = dateMatch ? dateMatch[1].trim() : (usedMultiDateFallback ? multiDateMatch[1].trim() : null);
   let normalizedDate = null;
-  let dateConfidence = 0.95;
-  let datePresence = 'EXPLICIT';
+  let dateConfidence = rawDate ? (usedMultiDateFallback ? 0.55 : 0.95) : null;
+  let datePresence = !rawDate ? 'MISSING' : (usedMultiDateFallback ? 'UNCERTAIN' : 'EXPLICIT');
 
   if (rawDate) {
     if (/^\d{4}-\d{2}-\d{2}$/.test(rawDate)) {

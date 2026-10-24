@@ -4,8 +4,10 @@ on:
   pull_request:
     paths:
       - "server/services/ocr/**"
+      - "server/services/clinical/clinicalParser.js"
       - "server/utils/realDocumentExtractor.js"
       - "server/tests/localTesseractProvider.test.js"
+      - "server/tests/documentHeaderMetadata.test.js"
       - "package.json"
       - "package-lock.json"
       - ".github/workflows/local-ocr-tests.yml"
@@ -33,4 +35,4 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Run local OCR provider tests
-        run: npm run test:local-ocr
+        run: npm run test:local-ocr && npm run test:header-metadata
