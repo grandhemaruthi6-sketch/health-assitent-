@@ -12,7 +12,6 @@ export const HomeDashboardScreen = () => {
     navigateTo,
     viewReport,
     setPermissionModal,
-    setIsAddHospitalModalOpen,
     resetUploadFlow,
     openHospitalDetails,
     isLoadingBackend
@@ -154,20 +153,20 @@ export const HomeDashboardScreen = () => {
                 </div>
               ))}
 
-              {/* Action Card: Add hospital */}
+              {/* Action Card: Upload report to detect hospital */}
               <div
-                onClick={() => setIsAddHospitalModalOpen(true)}
-                className="bg-gradient-to-br from-teal-50/70 to-emerald-50/70 p-3.5 rounded-2xl border border-dashed border-teal-300 hover:border-teal-500 transition cursor-pointer flex flex-col justify-between min-h-[118px] active:scale-98 group"
+                onClick={handleStartUpload}
+                className="bg-gradient-to-br from-sky-50/70 to-blue-50/70 p-3.5 rounded-2xl border border-dashed border-sky-300 hover:border-sky-500 transition cursor-pointer flex flex-col justify-between min-h-[118px] active:scale-98 group"
               >
-                <div className="w-8 h-8 rounded-xl bg-white text-teal-600 flex items-center justify-center text-base font-bold shadow-2xs group-hover:bg-teal-500 group-hover:text-white transition">
-                  +
+                <div className="w-8 h-8 rounded-xl bg-white text-sky-600 flex items-center justify-center text-base font-bold shadow-2xs group-hover:bg-sky-500 group-hover:text-white transition">
+                  📄
                 </div>
                 <div className="mt-2">
-                  <h4 className="text-xs font-bold text-teal-950 leading-snug">
-                    Add Hospital
+                  <h4 className="text-xs font-bold text-sky-950 leading-snug">
+                    Detect Hospital
                   </h4>
-                  <p className="text-[10px] text-teal-700 mt-0.5 font-medium">
-                    Register a hospital or clinic
+                  <p className="text-[10px] text-sky-700 mt-0.5 font-medium">
+                    Upload a report to auto-detect details
                   </p>
                 </div>
               </div>

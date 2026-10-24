@@ -4,7 +4,6 @@ import { DeviceFrameWrapper } from './components/common/DeviceFrameWrapper';
 import { ScreenGalleryModal } from './components/common/ScreenGalleryModal';
 import { DeleteReportDialog } from './screens/DeleteReportDialog';
 import { MicrophonePermissionModal } from './screens/MicrophonePermissionModal';
-import { AddHospitalModal } from './components/common/AddHospitalModal';
 
 // Screens
 import { SplashScreen } from './screens/SplashScreen';
@@ -122,7 +121,6 @@ export const App = () => {
       <ScreenGalleryModal />
       <DeleteReportDialog />
       <MicrophonePermissionModal />
-      <AddHospitalModal />
     </DeviceFrameWrapper>
   );
 };

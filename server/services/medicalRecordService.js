@@ -24,7 +24,20 @@ export class MedicalRecordService {
     `).get(userId, cleanName);
 
     if (existing) {
-      return existing;
+      // Backfill metadata discovered by OCR without overwriting verified values.
+      const updates = [];
+      const params = [];
+      for (const [column, value] of [['branch', branch], ['location', location], ['department', department]]) {
+        if (value && !existing[column]) {
+          updates.push(column + ' = ?');
+          params.push(value);
+        }
+      }
+      if (updates.length > 0) {
+        db.prepare('UPDATE hospitals SET ' + updates.join(', ') + ' WHERE id = ? AND user_id = ?')
+          .run(...params, existing.id, userId);
+      }
+      return db.prepare('SELECT * FROM hospitals WHERE id = ? AND user_id = ?').get(existing.id, userId);
     }
 
     const hospitalId = uuidv4();

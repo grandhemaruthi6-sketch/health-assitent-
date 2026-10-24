@@ -9,6 +9,7 @@ import {
   REPORT_TYPES
 } from '../data/mockData';
 import { apiClient } from '../services/apiClient';
+import { extractLabeledMetadata } from '../utils/documentMetadataExtractor';
 import { 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
@@ -904,7 +905,11 @@ export const AppProvider = ({ children }) => {
         fileType: uploadFormData.selectedFile?.type?.includes("image") ? "IMAGE" : "PDF",
         fileSize: `${fileSizeMB} MB`,
         hospitalId: uploadFormData.hospitalId || null,
-        hospitalName: uploadFormData.hospitalName || clinicalData.metadata?.facilityName || "Clinical Facility",
+        hospitalName: uploadFormData.hospitalName || clinicalData.metadata?.facilityName || "Unidentified facility",
+        hospitalDetected: Boolean(clinicalData.metadata?.facilityName),
+        hospitalBranch: extractLabeledMetadata(clinicalData.rawOcr?.fullText, /(?:branch|unit|campus)/i),
+        hospitalLocation: extractLabeledMetadata(clinicalData.rawOcr?.fullText, /(?:address|location)/i),
+        hospitalDepartment: extractLabeledMetadata(clinicalData.rawOcr?.fullText, /(?:department|dept|specialty|speciality)/i),
         doctorName: clinicalData.metadata?.clinicianName || uploadFormData.doctorName || "",
         reportDate: extractedReportDate,
         visitDate: configuredVisitDate,
@@ -967,7 +972,10 @@ export const AppProvider = ({ children }) => {
 
         const persisted = await apiClient.reports.uploadReport({
           hospitalId: extractedDraft.hospitalId,
-          hospitalName: extractedDraft.hospitalName,
+          hospitalName: extractedDraft.hospitalName || "Unidentified facility",
+          hospitalBranch: extractedDraft.hospitalBranch || null,
+          hospitalLocation: extractedDraft.hospitalLocation || null,
+          hospitalDepartment: extractedDraft.hospitalDepartment || null,
           visitDate: cleanVisitDate,
           reportDate: cleanReportDate,
           title: extractedDraft.title,

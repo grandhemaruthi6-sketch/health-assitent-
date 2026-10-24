@@ -6,12 +6,10 @@ import { REPORT_TYPES } from '../data/mockData';
 export const UploadReportScreen = () => {
   const {
     navigateTo,
-    hospitals,
     uploadStep,
     setUploadStep,
     uploadFormData,
     setUploadFormData,
-    setIsAddHospitalModalOpen,
     executeDocumentAnalysis,
     isAnalyzing
   } = useApp();
@@ -84,7 +82,7 @@ export const UploadReportScreen = () => {
     <div className="flex-1 flex flex-col bg-[#F8FAFC] pb-10 select-none min-h-[720px]">
       <Header
         title="Upload Medical Record"
-        subtitle={`Step ${uploadStep} of 5`}
+        subtitle={`Step ${uploadStep} of 3`}
         showBack={true}
         onBack={() => {
           if (uploadStep > 1) setUploadStep(s => s - 1);
@@ -97,14 +95,12 @@ export const UploadReportScreen = () => {
         <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 mb-1.5 uppercase tracking-wider">
           <span className={uploadStep >= 1 ? 'text-brand-600' : ''}>1. Type</span>
           <span className={uploadStep >= 2 ? 'text-brand-600' : ''}>2. Document</span>
-          <span className={uploadStep >= 3 ? 'text-brand-600' : ''}>3. Hospital</span>
-          <span className={uploadStep >= 4 ? 'text-brand-600' : ''}>4. Date</span>
-          <span className={uploadStep >= 5 ? 'text-brand-600' : ''}>5. Analyze</span>
+          <span className={uploadStep >= 3 ? 'text-brand-600' : ''}>3. AI Analysis</span>
         </div>
         <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
           <div
             className="bg-brand-500 h-full rounded-full transition-all duration-300"
-            style={{ width: `${(uploadStep / 5) * 100}%` }}
+            style={{ width: `${(uploadStep / 3) * 100}%` }}
           ></div>
         </div>
       </div>
@@ -376,15 +372,15 @@ export const UploadReportScreen = () => {
             )}
 
             <button
-              onClick={() => setUploadStep(3)}
-              disabled={!uploadFormData.selectedFile}
+              onClick={executeDocumentAnalysis}
+              disabled={!uploadFormData.selectedFile || isAnalyzing}
               className={`w-full py-3.5 font-semibold text-xs rounded-xl shadow-soft transition flex items-center justify-center space-x-2 ${
-                uploadFormData.selectedFile
+                uploadFormData.selectedFile && !isAnalyzing
                   ? 'bg-brand-500 hover:bg-brand-600 text-white active:scale-98'
                   : 'bg-slate-200 text-slate-400 cursor-not-allowed'
               }`}
             >
-              <span>Continue to Hospital Selection</span>
+              <span>{isAnalyzing ? "Analyzing Document..." : "Analyze & Auto-detect Details"}</span>
               <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
@@ -392,267 +388,6 @@ export const UploadReportScreen = () => {
           </div>
         )}
 
-        {/* ============================================== */}
-        {/* STEP 3: SELECT HOSPITAL                         */}
-        {/* ============================================== */}
-        {uploadStep === 3 && (
-          <div className="space-y-4 animate-in fade-in duration-200">
-            <div>
-              <h2 className="text-sm font-bold text-slate-900">Select Hospital / Clinic</h2>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Tag which medical facility generated this report.
-              </p>
-            </div>
-
-            {/* Hospital Selection Radio Cards */}
-            <div className="space-y-2.5">
-              {hospitals.map(hosp => {
-                const isSelected = uploadFormData.hospitalId === hosp.id;
-                return (
-                  <div
-                    key={hosp.id}
-                    onClick={() => setUploadFormData(prev => ({
-                      ...prev,
-                      hospitalId: hosp.id,
-                      hospitalName: hosp.name
-                    }))}
-                    className={`p-3.5 rounded-2xl border transition cursor-pointer flex items-center justify-between ${
-                      isSelected
-                        ? 'border-brand-500 bg-teal-50/70 shadow-xs ring-2 ring-brand-500/20'
-                        : 'border-slate-200 bg-white hover:border-slate-300'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div className="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-base shadow-2xs">
-                        🏥
-                      </div>
-                      <div>
-                        <h4 className="text-xs font-bold text-slate-900 leading-tight">
-                          {hosp.name}
-                        </h4>
-                        <p className="text-[10px] text-slate-400 mt-0.5">
-                          {hosp.location || "Clinical Facility"} • {hosp.reportCount || 0} Saved Reports
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                      isSelected ? 'border-brand-500 bg-brand-500' : 'border-slate-300'
-                    }`}>
-                      {isSelected && <span className="w-2 h-2 bg-white rounded-full"></span>}
-                    </div>
-                  </div>
-                );
-              })}
-
-              {/* Add Another Hospital CTA Button */}
-              <button
-                type="button"
-                onClick={() => setIsAddHospitalModalOpen(true)}
-                className="w-full py-3 px-4 bg-white hover:bg-slate-50 border-2 border-dashed border-teal-300 hover:border-teal-500 text-teal-800 rounded-2xl text-xs font-bold transition flex items-center justify-center space-x-2 active:scale-98"
-              >
-                <span>➕</span>
-                <span>Add Another Hospital</span>
-              </button>
-            </div>
-
-            <button
-              onClick={() => setUploadStep(4)}
-              className="w-full py-3.5 bg-brand-500 hover:bg-brand-600 active:scale-98 text-white font-semibold text-xs rounded-xl shadow-soft transition flex items-center justify-center space-x-2"
-            >
-              <span>Continue to Date Selection</span>
-              <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-          </div>
-        )}
-
-        {/* ============================================== */}
-        {/* STEP 4: SELECT DATE                             */}
-        {/* ============================================== */}
-        {uploadStep === 4 && (
-          <div className="space-y-4 animate-in fade-in duration-200">
-            <div>
-              <h2 className="text-sm font-bold text-slate-900">Select Clinical Visit / Test Date</h2>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Separate from upload time: Enter the actual clinical encounter date printed on the report.
-              </p>
-            </div>
-
-            {/* Date Picker Card */}
-            <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-2xs space-y-3">
-              <div className="flex items-center justify-between">
-                <label className="block text-xs font-bold text-slate-700">
-                  Actual Visit / Specimen Date <span className="text-rose-500">*</span>
-                </label>
-                <span className="text-[10px] text-teal-700 font-semibold bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200">
-                  Clinical Date
-                </span>
-              </div>
-              <input
-                type="date"
-                value={uploadFormData.visitDate}
-                onChange={(e) => setUploadFormData(prev => ({ ...prev, visitDate: e.target.value }))}
-                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-800 focus:bg-white focus:border-brand-500 focus:outline-none"
-              />
-              <p className="text-[10px] text-slate-400">
-                🔒 Ingestion timestamp ({new Date().toLocaleDateString()}) is automatically recorded by the system separately.
-              </p>
-
-              {/* Quick Preset Buttons */}
-              <div className="flex items-center space-x-2 pt-1">
-                <button
-                  type="button"
-                  onClick={() => setUploadFormData(prev => ({ ...prev, visitDate: new Date().toISOString().split('T')[0] }))}
-                  className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-[11px] font-semibold"
-                >
-                  Today
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const d = new Date();
-                    d.setDate(d.getDate() - 1);
-                    setUploadFormData(prev => ({ ...prev, visitDate: d.toISOString().split('T')[0] }));
-                  }}
-                  className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-[11px] font-semibold"
-                >
-                  Yesterday
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const d = new Date();
-                    d.setDate(d.getDate() - 7);
-                    setUploadFormData(prev => ({ ...prev, visitDate: d.toISOString().split('T')[0] }));
-                  }}
-                  className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-[11px] font-semibold"
-                >
-                  Last Week
-                </button>
-              </div>
-            </div>
-
-            {/* Doctor Note / Attending Physician */}
-            <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-2xs space-y-2">
-              <label className="block text-xs font-bold text-slate-700">
-                Attending Physician / Specialist (Optional)
-              </label>
-              <input
-                type="text"
-                value={uploadFormData.doctorName}
-                onChange={(e) => setUploadFormData(prev => ({ ...prev, doctorName: e.target.value }))}
-                placeholder="e.g. Dr. Sarah Jenkins, MD"
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:bg-white focus:border-brand-500 focus:outline-none"
-              />
-            </div>
-
-            <button
-              onClick={() => setUploadStep(5)}
-              className="w-full py-3.5 bg-brand-500 hover:bg-brand-600 active:scale-98 text-white font-semibold text-xs rounded-xl shadow-soft transition flex items-center justify-center space-x-2"
-            >
-              <span>Continue to Pre-Flight Review</span>
-              <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-          </div>
-        )}
-
-        {/* ============================================== */}
-        {/* STEP 5: REVIEW STEP PRE-FLIGHT                  */}
-        {/* ============================================== */}
-        {uploadStep === 5 && (
-          <div className="space-y-4 animate-in fade-in duration-200">
-            <div>
-              <h2 className="text-sm font-bold text-slate-900">Step 5: Review &amp; Submit</h2>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Verify the configured metadata before launching private OCR &amp; clinical AI analysis.
-              </p>
-            </div>
-
-            {/* Summary Review Card with Edit triggers */}
-            <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-2xs space-y-3">
-              <div className="flex items-center justify-between pb-2 border-b border-slate-100 text-xs">
-                <span className="text-slate-400">Report Category</span>
-                <div className="flex items-center space-x-2">
-                  <span className="font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200">
-                    {uploadFormData.reportType?.icon} {uploadFormData.reportType?.name}
-                  </span>
-                  <button onClick={() => setUploadStep(1)} className="text-[11px] text-brand-600 hover:underline font-semibold">
-                    Edit
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between pb-2 border-b border-slate-100 text-xs">
-                <span className="text-slate-400">File Selected</span>
-                <div className="flex items-center space-x-2">
-                  <span className="font-semibold text-slate-800 truncate max-w-[140px]">
-                    {uploadFormData.selectedFile?.name || "Document.pdf"}
-                  </span>
-                  <button onClick={() => setUploadStep(2)} className="text-[11px] text-brand-600 hover:underline font-semibold">
-                    Edit
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between pb-2 border-b border-slate-100 text-xs">
-                <span className="text-slate-400">Hospital Facility</span>
-                <div className="flex items-center space-x-2">
-                  <span className="font-semibold text-slate-800 truncate max-w-[140px]">
-                    {uploadFormData.hospitalName}
-                  </span>
-                  <button onClick={() => setUploadStep(3)} className="text-[11px] text-brand-600 hover:underline font-semibold">
-                    Edit
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-slate-400">Clinical Visit Date</span>
-                <div className="flex items-center space-x-2">
-                  <span className="font-semibold text-slate-800">
-                    {uploadFormData.visitDate}
-                  </span>
-                  <button onClick={() => setUploadStep(4)} className="text-[11px] text-brand-600 hover:underline font-semibold">
-                    Edit
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Transparent AI Engine Status */}
-            <div className="bg-teal-50/80 rounded-2xl p-3.5 border border-teal-200 text-left space-y-1">
-              <div className="flex items-center space-x-1.5 text-xs font-bold text-teal-900">
-                <span>⚡</span>
-                <span>Private OCR &amp; Clinical Pipeline Ready</span>
-              </div>
-              <p className="text-[11px] text-teal-700 leading-snug">
-                Analysis will parse actual clinical markers, reference bounds, clinician notes, and layout from <b>{uploadFormData.selectedFile?.name}</b>.
-              </p>
-            </div>
-
-            {/* Execute Analysis CTA with Duplicate Submission Guard */}
-            <button
-              onClick={executeDocumentAnalysis}
-              disabled={isAnalyzing}
-              className={`w-full py-3.5 px-4 font-semibold text-sm rounded-xl shadow-soft transition flex items-center justify-center space-x-2 ${
-                isAnalyzing
-                  ? 'bg-slate-300 text-slate-500 cursor-not-allowed'
-                  : 'bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white active:scale-98'
-              }`}
-            >
-              <span>{isAnalyzing ? "Processing Document..." : "Launch Clinical AI Analysis"}</span>
-              {!isAnalyzing && (
-                <svg className="w-4 h-4 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path d="M14 5l7 7m0 0l-7 7m7-7H3" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              )}
-            </button>
-          </div>
-        )}
       </main>
 
       {/* Simulated Camera Viewfinder Modal */}

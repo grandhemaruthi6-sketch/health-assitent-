@@ -151,6 +151,7 @@ medicalRecordRouter.post('/reports', requireAuth, upload.single('document'), asy
       hospitalName,
       hospitalBranch,
       hospitalLocation,
+      hospitalDepartment,
       visitDate,
       reportDate,
       title,
@@ -182,7 +183,8 @@ medicalRecordRouter.post('/reports', requireAuth, upload.single('document'), asy
         const hospital = MedicalRecordService.createOrSelectHospital(req.user.id, {
           name: hospitalName,
           branch: hospitalBranch,
-          location: hospitalLocation
+          location: hospitalLocation,
+          department: hospitalDepartment
         });
         targetHospitalId = hospital.id;
       }
